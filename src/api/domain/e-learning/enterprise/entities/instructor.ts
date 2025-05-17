@@ -1,23 +1,34 @@
-import { AggregateRoot } from '@/api/core/entities/aggregate-root'
 import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-id'
 import { Optional } from '@/api/core/types/optional'
 import { Course } from './course'
+import { User, UserProps } from './user'
+import { UserRole } from './value-objects/user/role'
 
-interface InstructorProps {
+export interface InstructorProps extends UserProps {
 	name: string
-	bio?: string
+	bio?: string | null
+	cpf: string
+	phoneNumber?: string | null
 	courses?: Course[]
 	createdAt: Date
 	updatedAt?: Date | null
 }
 
-export class Instructor extends AggregateRoot<InstructorProps> {
+export class Instructor extends User<InstructorProps> {
 	get name() {
 		return this.props.name
 	}
 
 	get bio() {
-		return this.props.bio
+		return this.props.bio ?? null
+	}
+
+	get cpf() {
+		return this.props.cpf
+	}
+
+	get phoneNumber() {
+		return this.props.phoneNumber ?? null
 	}
 
 	get courses(): Course[] {
@@ -30,11 +41,6 @@ export class Instructor extends AggregateRoot<InstructorProps> {
 
 	get updatedAt() {
 		return this.props.updatedAt
-	}
-
-	set bio(newBio: string | undefined) {
-		this.props.bio = newBio
-		this.touch()
 	}
 
 	addCourse(course: Course) {
@@ -58,18 +64,69 @@ export class Instructor extends AggregateRoot<InstructorProps> {
 		this.touch()
 	}
 
-	private touch() {
-		this.props.updatedAt = new Date()
+	updateDetails(details: {
+		name?: string
+		bio?: string
+		cpf?: string
+		phoneNumber?: string
+		email?: string
+		passwordHash?: string
+	}) {
+		let updated = false
+
+		if (details.name && details.name !== this.props.name) {
+			if (!details.name || details.name.trim().length === 0) {
+				throw new Error('Nome não pode ser vazio')
+			}
+			this.props.name = details.name
+			updated = true
+		}
+
+		if (details.bio && details.bio !== this.props.bio) {
+			this.props.bio = details.bio
+			updated = true
+		}
+
+		if (details.cpf && details.cpf !== this.props.cpf) {
+			if (!details.cpf || details.cpf.trim().length === 0) {
+				throw new Error('Nome não pode ser vazio')
+			}
+			this.props.cpf = details.cpf
+			updated = true
+		}
+
+		if (details.phoneNumber && details.phoneNumber !== this.props.phoneNumber) {
+			this.props.phoneNumber = details.phoneNumber
+			updated = true
+		}
+
+		if (details.email && details.email !== this.props.email) {
+			this.props.email = details.email
+			updated = true
+		}
+
+		if (
+			details.passwordHash &&
+			details.passwordHash !== this.props.passwordHash
+		) {
+			this.props.passwordHash = details.passwordHash
+			updated = true
+		}
+
+		if (updated) {
+			this.touch()
+		}
 	}
 
 	static create(
-		props: Optional<InstructorProps, 'createdAt' | 'courses'>,
+		props: Optional<InstructorProps, 'createdAt' | 'courses' | 'role'>,
 		id?: UniqueEntityId,
 	) {
 		return new Instructor(
 			{
 				...props,
 				courses: props.courses ?? [],
+				role: UserRole.INSTRUCTOR,
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

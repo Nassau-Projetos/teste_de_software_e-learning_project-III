@@ -10,8 +10,7 @@ import { Status } from './value-objects/status'
 
 interface CourseProps {
 	title: string
-	description: string
-	summary: string
+	description?: string | null
 	slug: Slug
 	thumbnailUrl: string
 	duration: number
@@ -32,11 +31,7 @@ export class Course extends AggregateRoot<CourseProps> {
 	}
 
 	get description() {
-		return this.props.description
-	}
-
-	get summary() {
-		return this.props.summary
+		return this.props.description || null
 	}
 
 	get slug() {
@@ -84,7 +79,7 @@ export class Course extends AggregateRoot<CourseProps> {
 	}
 
 	get publishedAt() {
-		return this.props.publishedAt
+		return this.props.publishedAt || null
 	}
 	set publishedAt(publishedAt: Date | undefined | null) {
 		const current = this.props.publishedAt?.getTime()
@@ -115,7 +110,6 @@ export class Course extends AggregateRoot<CourseProps> {
 	updateDetails(details: {
 		title?: string
 		description?: string
-		summary?: string
 		duration?: number
 		thumbnailUrl?: string
 	}) {
@@ -132,11 +126,6 @@ export class Course extends AggregateRoot<CourseProps> {
 
 		if (details.description && details.description !== this.props.description) {
 			this.props.description = details.description
-			updated = true
-		}
-
-		if (details.summary && details.summary !== this.props.summary) {
-			this.props.summary = details.summary
 			updated = true
 		}
 
@@ -240,24 +229,19 @@ export class Course extends AggregateRoot<CourseProps> {
 		}
 	}
 
-	changeInstructor(newInstructorId: UniqueEntityId) {
-		if (!this.props.instructorId.equals(newInstructorId)) {
-			this.props.instructorId = newInstructorId
-			this.touch()
-		}
-	}
-
 	private touch() {
 		this.props.updatedAt = new Date()
 	}
 
 	static create(
-		props: Optional<CourseProps, 'createdAt'>,
+		props: Optional<CourseProps, 'createdAt' | 'slug' | 'status'>,
 		id?: UniqueEntityId,
 	) {
 		const course = new Course(
 			{
 				...props,
+				slug: props.slug ?? Slug.createFromText(props.title),
+				status: props.status ?? Status.DRAFT,
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

@@ -8,6 +8,7 @@ import { PaymentStatus } from './value-objects/payment/payment-status'
 interface EnrollmentProps {
 	studentId: UniqueEntityId
 	courseId: UniqueEntityId
+	paymentId: UniqueEntityId
 	status: EnrollmentStatus
 	progress: number
 	enrolledAt: Date

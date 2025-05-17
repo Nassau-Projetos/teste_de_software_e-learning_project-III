@@ -191,7 +191,10 @@ export class CourseModule extends AggregateRoot<CourseModuleProps> {
 	}
 
 	static create(
-		props: Optional<CourseModuleProps, 'createdAt' | 'lessons' | 'quiz'>,
+		props: Optional<
+			CourseModuleProps,
+			'createdAt' | 'lessons' | 'quiz' | 'status'
+		>,
 		id?: UniqueEntityId,
 	) {
 		return new CourseModule(
@@ -199,6 +202,7 @@ export class CourseModule extends AggregateRoot<CourseModuleProps> {
 				...props,
 				lessons: props.lessons ?? [],
 				quiz: props.quiz ?? null,
+				status: props.status ?? Status.DRAFT,
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,
