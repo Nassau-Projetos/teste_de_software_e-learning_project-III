@@ -2,9 +2,9 @@ import { Either, left, right } from '@/api/core/either/either'
 import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-id'
 import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
 import { Course } from '../../../enterprise/entities/course'
-import { CourseCategory } from '../../../enterprise/entities/value-objects/course/courseCategory'
-import { CourseLevel } from '../../../enterprise/entities/value-objects/course/courseLevel'
-import { Price } from '../../../enterprise/entities/value-objects/price'
+import { CourseLevel } from '../../../enterprise/entities/value-objects/course/level'
+import { Price } from '../../../enterprise/entities/value-objects/price/price'
+import { CourseCategorysRepository } from '../../repositories/course-catogories-repository'
 import { CoursesRepository } from '../../repositories/courses-repository'
 import { InstructorsRepository } from '../../repositories/instructors-repository'
 
@@ -15,7 +15,7 @@ interface CreateCourseUseCaseRequest {
 	thumbnailUrl: string
 	duration: number
 	price: number
-	category: string
+	categoryId: number
 	level: string
 }
 
@@ -29,6 +29,7 @@ type CreateCourseUseCaseResponse = Either<
 export class CreateCourseUseCase {
 	constructor(
 		private courseRepository: CoursesRepository,
+		private categoryRepository: CourseCategorysRepository,
 		private instructorRepository: InstructorsRepository,
 	) {}
 
@@ -39,14 +40,17 @@ export class CreateCourseUseCase {
 		duration,
 		price,
 		instructorId,
-		category,
+		categoryId,
 		level,
 	}: CreateCourseUseCaseRequest): Promise<CreateCourseUseCaseResponse> {
 		const instructor = await this.instructorRepository.findUnique({
 			instructorId,
 		})
+		const category = await this.categoryRepository.findUnique({
+			categoryId,
+		})
 
-		if (!instructor) {
+		if (!instructor || !category) {
 			return left(new ResourceNotFoundError())
 		}
 
@@ -59,11 +63,15 @@ export class CreateCourseUseCase {
 			instructorId: new UniqueEntityId(instructorId),
 			modules: [],
 			level: CourseLevel.fromValue(level),
-			category: CourseCategory.fromValue(category),
+			category,
 		})
 
+		category.incrementCourseCount()
 		instructor.addCourse(course)
 
+		await this.categoryRepository.update(category.id.toNumber(), {
+			courseCount: category.courseCount,
+		})
 		await this.instructorRepository.update(instructorId, { courses: [course] })
 		await this.courseRepository.create(course)
 

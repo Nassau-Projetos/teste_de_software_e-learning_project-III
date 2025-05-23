@@ -22,7 +22,7 @@ export class DeleteStudentUseCase {
 			return left(new ResourceNotFoundError())
 		}
 
-		await this.studentRepository.remove(studentId)
+		await this.studentRepository.remove(student)
 
 		return right(null)
 	}

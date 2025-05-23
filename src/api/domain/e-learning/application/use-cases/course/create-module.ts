@@ -1,8 +1,8 @@
 import { Either, left, right } from '@/api/core/either/either'
 import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-id'
 import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
-import { CourseModule } from '../../../enterprise/entities/courseModule'
-import { CourseModulesRepository } from '../../repositories/courseModules-repository'
+import { CourseModule } from '../../../enterprise/entities/course-module'
+import { CourseModulesRepository } from '../../repositories/course-modules-repository'
 import { CoursesRepository } from '../../repositories/courses-repository'
 
 interface CreateCourseModuleUseCaseRequest {
@@ -50,7 +50,7 @@ export class CreateCourseModuleUseCase {
 
 		course.addModule(module)
 
-		await this.courseRepository.update(courseId, { modules: course.modules })
+		await this.courseRepository.save(course)
 		await this.courseModuleRepository.create(module)
 
 		return right({ module })

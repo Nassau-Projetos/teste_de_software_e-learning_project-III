@@ -22,7 +22,7 @@ export class DeleteInstructorUseCase {
 			return left(new ResourceNotFoundError())
 		}
 
-		await this.instructorRepository.remove(instructorId)
+		await this.instructorRepository.remove(instructor)
 
 		return right(null)
 	}

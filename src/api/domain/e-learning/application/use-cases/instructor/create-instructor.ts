@@ -8,7 +8,7 @@ interface CreateInstructorUseCaseRequest {
 	cpf: string
 	phoneNumber?: string
 	email: string
-	password: string
+	passwordHash: string
 }
 
 type CreateInstructorUseCaseResponse = Either<
@@ -27,7 +27,7 @@ export class CreateInstructorUseCase {
 		cpf,
 		phoneNumber,
 		email,
-		password,
+		passwordHash,
 	}: CreateInstructorUseCaseRequest): Promise<CreateInstructorUseCaseResponse> {
 		const instructor = Instructor.create({
 			name,
@@ -35,7 +35,7 @@ export class CreateInstructorUseCase {
 			cpf,
 			phoneNumber,
 			email,
-			passwordHash: password,
+			passwordHash,
 		})
 
 		await this.instructorRepository.create(instructor)

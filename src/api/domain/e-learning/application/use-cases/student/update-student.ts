@@ -46,7 +46,7 @@ export class UpdateStudentUseCase {
 			phoneNumber,
 		})
 
-		await this.studentRepository.update(studentId, data)
+		await this.studentRepository.save(student)
 
 		return right({ student })
 	}

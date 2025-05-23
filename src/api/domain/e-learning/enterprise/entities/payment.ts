@@ -5,7 +5,6 @@ import { PaymentStatus } from './value-objects/payment/payment-status'
 
 interface PaymentProps {
 	enrollmentId: UniqueEntityId
-	amount: number
 	status: PaymentStatus
 	externalTransactionId?: string | null
 	createdAt: Date
@@ -15,10 +14,6 @@ interface PaymentProps {
 export class Payment extends Entity<PaymentProps> {
 	get enrollmentId() {
 		return this.props.enrollmentId
-	}
-
-	get amount() {
-		return this.props.amount
 	}
 
 	get status() {

@@ -1,6 +1,6 @@
-export const PAYMENT_STATUS = {
-	PENDING: 1,
-	APPROVED: 2,
-	REJECTED: 3,
-	CANCELLED: 4,
-} as const
+export enum PAYMENT_STATUS {
+	PENDING = 1,
+	APPROVED = 2,
+	REJECTED = 3,
+	CANCELLED = 4,
+}

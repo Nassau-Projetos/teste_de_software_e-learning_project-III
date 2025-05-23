@@ -4,7 +4,6 @@ import { Optional } from '@/api/core/types/optional'
 import { UserRole } from './value-objects/user/role'
 
 export interface UserProps {
-	name: string
 	email: string
 	passwordHash: string
 	avatarUrl?: string | null
@@ -13,11 +12,9 @@ export interface UserProps {
 	updatedAt?: Date | null
 }
 
-export class User<Props extends UserProps> extends AggregateRoot<Props> {
-	get name() {
-		return this.props.name
-	}
-
+export class User<
+	Props extends UserProps = UserProps,
+> extends AggregateRoot<Props> {
 	get email() {
 		return this.props.email
 	}
@@ -46,21 +43,12 @@ export class User<Props extends UserProps> extends AggregateRoot<Props> {
 		this.props.updatedAt = new Date()
 	}
 
-	updateDetails(details: {
-		name?: string
+	protected updateUserDetailsBase(details: {
 		email?: string
 		passwordHash?: string
 		avatarUrl?: string
 	}) {
 		let updated = false
-
-		if (details.name && details.name !== this.props.name) {
-			if (!details.name || details.name.trim().length === 0) {
-				throw new Error('Nome não pode ser vazio')
-			}
-			this.props.name = details.name
-			updated = true
-		}
 
 		if (details.email && details.email !== this.props.email) {
 			if (!details.email || details.email.trim().length === 0) {
@@ -92,13 +80,14 @@ export class User<Props extends UserProps> extends AggregateRoot<Props> {
 	}
 
 	protected static createBase(
-		props: Optional<UserProps, 'createdAt'>,
+		props: Optional<UserProps, 'createdAt' | 'role'>,
 		id?: UniqueEntityId,
 	) {
 		const user = new User(
 			{
 				...props,
 				createdAt: props.createdAt ?? new Date(),
+				role: props.role ?? UserRole.STUDENT,
 			},
 			id,
 		)

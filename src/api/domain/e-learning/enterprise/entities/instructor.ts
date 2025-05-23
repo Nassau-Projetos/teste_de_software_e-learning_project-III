@@ -113,6 +113,7 @@ export class Instructor extends User<InstructorProps> {
 			updated = true
 		}
 
+		this.updateUserDetailsBase(details)
 		if (updated) {
 			this.touch()
 		}
@@ -130,6 +131,19 @@ export class Instructor extends User<InstructorProps> {
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,
+			() => new UniqueEntityId(),
 		)
 	}
 }
+
+const instructor1 = Instructor.create({
+	name: 'Teste1',
+	cpf: '555555555',
+	email: 'test@gmail.com',
+	passwordHash: 'secret1595',
+})
+
+console.log(instructor1.id.toString()) // UUID gerado automaticamente
+console.log(instructor1.cpf) // Slug criado a partir do título
+console.log(instructor1.email) // Status.DRAFT
+console.log(instructor1.createdAt) // Data atual

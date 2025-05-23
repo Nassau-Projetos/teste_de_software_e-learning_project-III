@@ -1,6 +1,7 @@
 import { Either, left, right } from '@/api/core/either/either'
 import { NotAllowedError } from '@/api/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
+import { CourseCategorysRepository } from '../../repositories/course-catogories-repository'
 import { CoursesRepository } from '../../repositories/courses-repository'
 import { InstructorsRepository } from '../../repositories/instructors-repository'
 
@@ -17,6 +18,7 @@ type DeleteCourseUseCaseResponse = Either<
 export class DeleteCourseUseCase {
 	constructor(
 		private courseRepository: CoursesRepository,
+		private categoryRepository: CourseCategorysRepository,
 		private instructorRepository: InstructorsRepository,
 	) {}
 
@@ -37,11 +39,24 @@ export class DeleteCourseUseCase {
 			return left(new NotAllowedError())
 		}
 
-		instructor?.removeCourse(course.id)
+		const category = await this.categoryRepository.findUnique({
+			categoryId: course.category.id.toNumber(),
+		})
+
+		if (!category) {
+			return left(new ResourceNotFoundError())
+		}
+
+		category.decrementCourseCount()
+		instructor.removeCourse(course.id)
+
+		await this.categoryRepository.update(category.id.toNumber(), {
+			courseCount: category.courseCount,
+		})
 		await this.instructorRepository.update(instructorId, {
 			courses: instructor?.courses,
 		})
-		await this.courseRepository.remove(courseId)
+		await this.courseRepository.remove(course)
 
 		return right(null)
 	}

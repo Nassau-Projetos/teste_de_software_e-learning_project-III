@@ -5,12 +5,9 @@ export abstract class InstructorsRepository {
 	abstract findUnique(
 		query: FindUniqueInstructorQuery,
 	): Promise<Instructor | null>
-	abstract create(instructor: Instructor): Promise<Instructor>
-	abstract update(
-		instructorId: string,
-		data: UpdateInstructorOptions,
-	): Promise<void>
-	abstract remove(instructorId: string): Promise<void>
+	abstract create(instructor: Instructor): Promise<void>
+	abstract save(instructor: Instructor): Promise<void>
+	abstract remove(instructor: Instructor): Promise<void>
 }
 
 export abstract class FindUniqueInstructorQuery {

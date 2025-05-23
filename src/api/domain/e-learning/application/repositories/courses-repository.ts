@@ -1,44 +1,26 @@
-import { PaginationParams } from '@/api/core/repositories/pagination-params'
 import { Course } from '../../enterprise/entities/course'
-import { CourseModule } from '../../enterprise/entities/courseModule'
+import { CourseModule } from '../../enterprise/entities/course-module'
 
 export abstract class CoursesRepository {
 	abstract findUnique(query: FindUniqueCourseQuery): Promise<Course | null>
-	abstract findAllPublished(query: FindAllPublishedQuery): Promise<Course[]>
-	abstract create(data: Course): Promise<Course>
-	// abstract paginate(query?: PaginateCourseQuery): Promise< TODO: Terminar
-	abstract update(
-		courseId: string,
-		data: UpdateCourseQuery,
-	): Promise<Course | null>
-	abstract remove(courseId: string): Promise<void>
+	abstract findMany(): Promise<Course[]>
+	abstract create(data: Course): Promise<void>
+	abstract save(course: Course): Promise<void>
+	abstract remove(course: Course): Promise<void>
 }
 
-abstract class FindUniqueCourseQuery {
+export abstract class FindUniqueCourseQuery {
 	abstract courseId?: string
 	abstract slug?: string
 }
 
-abstract class FindAllPublishedQuery {
-	abstract paginate: PaginationParams
-	abstract status: string
-}
-
-abstract class UpdateCourseQuery {
+export abstract class UpdateCourseOptions {
 	title?: string
-	description?: string
+	description?: string | null
 	thumbnailUrl?: string
 	duration?: number
 	modules?: CourseModule[]
 	price?: number
 	category?: string
 	level?: string
-}
-
-abstract class PaginateCourseQuery {
-	abstract paginate: PaginationParams
-	abstract query?: {
-		id?: string
-		slug: string
-	}
 }

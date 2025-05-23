@@ -2,9 +2,8 @@ import { Either, left, right } from '@/api/core/either/either'
 import { NotAllowedError } from '@/api/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
 import { Course } from '../../../enterprise/entities/course'
-import { CourseCategory } from '../../../enterprise/entities/value-objects/course/courseCategory'
-import { CourseLevel } from '../../../enterprise/entities/value-objects/course/courseLevel'
-import { Price } from '../../../enterprise/entities/value-objects/price'
+import { CourseLevel } from '../../../enterprise/entities/value-objects/course/level'
+import { Price } from '../../../enterprise/entities/value-objects/price/price'
 import { CoursesRepository } from '../../repositories/courses-repository'
 
 interface UpdateCourseUseCaseRequest {
@@ -16,7 +15,6 @@ interface UpdateCourseUseCaseRequest {
 		thumbnailUrl?: string
 		duration?: number
 		price?: number
-		category?: string
 		level?: string
 	}
 }
@@ -37,15 +35,9 @@ export class UpdateCourseUseCase {
 		data,
 	}: UpdateCourseUseCaseRequest): Promise<UpdateCourseUseCaseResponse> {
 		const course = await this.courseRepository.findUnique({ courseId })
-		const {
-			title,
-			category,
-			description,
-			duration,
-			level,
-			price,
-			thumbnailUrl,
-		} = data
+
+		const { title, description, duration, level, price, thumbnailUrl } = data
+
 		if (!course) {
 			return left(new ResourceNotFoundError())
 		}
@@ -62,22 +54,14 @@ export class UpdateCourseUseCase {
 		})
 
 		if (price !== undefined) {
-			if (price === 0) {
-				course.makeFree()
-			} else {
-				course.changePrice(Price.create(price))
-			}
+			course.changePrice(price === 0 ? Price.free() : Price.create(price))
 		}
 
 		if (level !== undefined) {
 			course.changeLevel(CourseLevel.fromValue(level))
 		}
 
-		if (category !== undefined) {
-			course.changeCategory(CourseCategory.fromValue(category))
-		}
-
-		await this.courseRepository.update(courseId, data)
+		await this.courseRepository.save(course)
 
 		return right({ course })
 	}
