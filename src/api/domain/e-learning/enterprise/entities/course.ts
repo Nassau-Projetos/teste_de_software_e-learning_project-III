@@ -1,21 +1,27 @@
 import { AggregateRoot } from '@/api/core/entities/aggregate-root'
 import { UniqueEntityId } from 'src/api/core/entities/value-objects/unique-entity-id'
 import { Optional } from 'src/api/core/types/optional'
-import { CourseModule } from './courseModule'
-import { CourseCategory } from './value-objects/course/courseCategory'
-import { CourseLevel } from './value-objects/course/courseLevel'
-import { Price } from './value-objects/price'
+import { CourseCategory } from './course-category'
+import { CourseModule } from './course-module'
+import { CourseRating } from './course-rating'
+import { CourseLevel } from './value-objects/course/level'
+import { Rating } from './value-objects/course/rating'
+import { Discount } from './value-objects/price/discount'
+import { Price } from './value-objects/price/price'
 import { Slug } from './value-objects/slug/slug'
 import { Status } from './value-objects/status'
 
 interface CourseProps {
 	title: string
-	description: string
-	summary: string
+	description?: string | null
 	slug: Slug
 	thumbnailUrl: string
 	duration: number
+	studentsCount: number
 	price: Price
+	discount?: Discount | null
+	rating: Rating
+	ratingCount: number
 	status: Status
 	instructorId: UniqueEntityId
 	modules: CourseModule[]
@@ -32,11 +38,7 @@ export class Course extends AggregateRoot<CourseProps> {
 	}
 
 	get description() {
-		return this.props.description
-	}
-
-	get summary() {
-		return this.props.summary
+		return this.props.description || null
 	}
 
 	get slug() {
@@ -47,8 +49,26 @@ export class Course extends AggregateRoot<CourseProps> {
 		return this.props.thumbnailUrl
 	}
 
+	get studentsCount() {
+		return this.props.studentsCount
+	}
+
 	get price() {
 		return this.props.price
+	}
+
+	get discount(): Discount | null {
+		return this.props.discount ?? null
+	}
+
+	get hasActiveDiscount(): boolean {
+		return !!this.discount && !this.discount.isExpired()
+	}
+
+	get finalPrice(): number {
+		return this.hasActiveDiscount
+			? this.discount!.applyTo(this.price).value
+			: this.price.value
 	}
 
 	get duration() {
@@ -71,6 +91,10 @@ export class Course extends AggregateRoot<CourseProps> {
 		return this.props.status
 	}
 
+	get rating() {
+		return this.props.rating
+	}
+
 	get level() {
 		return this.props.level
 	}
@@ -84,13 +108,48 @@ export class Course extends AggregateRoot<CourseProps> {
 	}
 
 	get publishedAt() {
-		return this.props.publishedAt
+		return this.props.publishedAt || null
 	}
 	set publishedAt(publishedAt: Date | undefined | null) {
 		const current = this.props.publishedAt?.getTime()
 		const next = publishedAt?.getTime()
 		if (current !== next) {
 			this.props.publishedAt = publishedAt
+			this.touch()
+		}
+	}
+
+	getAverageRating() {
+		return this.props.rating.average
+	}
+
+	getRatingCount() {
+		return this.props.rating.count
+	}
+
+	updateRating(ratings: CourseRating[]) {
+		const rating = Rating.fromRatings(ratings)
+		if (
+			rating.average !== this.props.rating.average ||
+			rating.count !== this.props.rating.count
+		) {
+			this.props.rating = rating
+			this.touch()
+		}
+	}
+
+	applyDiscount(discount: Discount) {
+		if (this.price.isFree()) {
+			throw new Error('Cursos gratuitos não aceitam desconto')
+		}
+
+		this.props.discount = discount
+		this.touch()
+	}
+
+	removeDiscount() {
+		if (this.props.discount) {
+			this.props.discount = null
 			this.touch()
 		}
 	}
@@ -112,10 +171,21 @@ export class Course extends AggregateRoot<CourseProps> {
 		this.touch()
 	}
 
+	incrementstudentsCount() {
+		this.props.studentsCount++
+		this.touch()
+	}
+
+	decrementstudentsCount() {
+		if (this.props.studentsCount > 0) {
+			this.props.studentsCount--
+			this.touch()
+		}
+	}
+
 	updateDetails(details: {
 		title?: string
 		description?: string
-		summary?: string
 		duration?: number
 		thumbnailUrl?: string
 	}) {
@@ -132,11 +202,6 @@ export class Course extends AggregateRoot<CourseProps> {
 
 		if (details.description && details.description !== this.props.description) {
 			this.props.description = details.description
-			updated = true
-		}
-
-		if (details.summary && details.summary !== this.props.summary) {
-			this.props.summary = details.summary
 			updated = true
 		}
 
@@ -240,27 +305,34 @@ export class Course extends AggregateRoot<CourseProps> {
 		}
 	}
 
-	changeInstructor(newInstructorId: UniqueEntityId) {
-		if (!this.props.instructorId.equals(newInstructorId)) {
-			this.props.instructorId = newInstructorId
-			this.touch()
-		}
-	}
-
 	private touch() {
 		this.props.updatedAt = new Date()
 	}
 
 	static create(
-		props: Optional<CourseProps, 'createdAt'>,
+		props: Optional<
+			CourseProps,
+			| 'createdAt'
+			| 'slug'
+			| 'status'
+			| 'studentsCount'
+			| 'rating'
+			| 'ratingCount'
+		>,
 		id?: UniqueEntityId,
 	) {
 		const course = new Course(
 			{
 				...props,
+				slug: props.slug ?? Slug.createFromText(props.title),
+				status: props.status ?? Status.DRAFT,
+				rating: new Rating(0, 0),
+				ratingCount: 0,
+				studentsCount: 0,
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,
+			() => new UniqueEntityId(),
 		)
 
 		return course

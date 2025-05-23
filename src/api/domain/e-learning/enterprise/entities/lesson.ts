@@ -1,7 +1,7 @@
 import { Optional } from '@/api/core/types/optional'
 import { Entity } from 'src/api/core/entities/entity'
 import { UniqueEntityId } from 'src/api/core/entities/value-objects/unique-entity-id'
-import { LessonContent } from './value-objects/lesson/lessonContent'
+import { LessonContent } from './value-objects/lesson/lesson-content'
 import { Status } from './value-objects/status'
 
 interface LessonProps {

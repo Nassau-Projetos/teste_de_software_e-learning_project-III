@@ -1,27 +1,35 @@
-import { AggregateRoot } from '@/api/core/entities/aggregate-root'
 import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-id'
+import { DomainEvents } from '@/api/core/events/domain-events'
 import { Optional } from '@/api/core/types/optional'
+import { EnrollmentRequestedEvent } from '../events/enrollment-requested-event'
+import { CourseRating } from './course-rating'
 import { Enrollment } from './enrollment'
 import { Quiz } from './quiz'
-import { QuizAnswer } from './value-objects/quiz/quizAnswer'
-import { QuizAttempt } from './value-objects/quiz/quizAttempt'
+import { User, UserProps } from './user'
+import { QuizAnswer } from './value-objects/quiz/quiz-answer'
+import { QuizAttempt } from './value-objects/quiz/quiz-attempt'
 
-interface StudentProps {
+export interface StudentProps extends UserProps {
 	name: string
-	email: string
+	cpf: string
+	phoneNumber?: string | null
 	enrollments?: Enrollment[]
 	attempts?: QuizAttempt[]
 	createdAt: Date
 	updatedAt?: Date | null
 }
 
-export class Student extends AggregateRoot<StudentProps> {
+export class Student extends User<StudentProps> {
 	get name() {
 		return this.props.name
 	}
 
-	get email() {
-		return this.props.email
+	get cpf() {
+		return this.props.cpf
+	}
+
+	get phoneNumber() {
+		return this.props.phoneNumber ?? null
 	}
 
 	get enrollments(): Enrollment[] {
@@ -40,23 +48,25 @@ export class Student extends AggregateRoot<StudentProps> {
 		return this.props.updatedAt
 	}
 
-	private touch() {
-		this.props.updatedAt = new Date()
-	}
-
-	enroll(courseId: UniqueEntityId) {
+	requestEnroll(courseId: UniqueEntityId) {
 		const exists = this.enrollments.find((e) => e.courseId.equals(courseId))
 		if (exists) {
 			throw new Error('Já está inscrito no curso')
 		}
 
-		const enrollment = Enrollment.create({
+		const enrollment = Enrollment.createPedingEnrollment({
 			studentId: this.id,
 			courseId,
 		})
 
 		this.props.enrollments = [...this.enrollments, enrollment]
+		this.addDomainEvent(
+			new EnrollmentRequestedEvent(this.id, courseId, enrollment.id),
+		)
+		DomainEvents.markAggregateForDispatch(this)
 		this.touch()
+
+		return enrollment
 	}
 
 	cancelEnrollment(courseId: UniqueEntityId) {
@@ -70,6 +80,29 @@ export class Student extends AggregateRoot<StudentProps> {
 		}
 
 		this.touch()
+	}
+
+	rateCourse(
+		courseId: UniqueEntityId,
+		value: number,
+		comment?: string,
+		existingRating?: CourseRating | null,
+	): CourseRating {
+		if (value < 1 || value > 5) {
+			throw new Error('Nota deve estar entre 1 e 5')
+		}
+
+		if (existingRating) {
+			existingRating.updateRating(value, comment)
+			return existingRating
+		}
+
+		return CourseRating.create({
+			courseId,
+			studentId: this.id,
+			value,
+			comment,
+		})
 	}
 
 	canAttemptQuiz(quiz: Quiz): boolean {
@@ -109,6 +142,61 @@ export class Student extends AggregateRoot<StudentProps> {
 		this.touch()
 
 		return attempt
+	}
+
+	updateDetails(details: {
+		name?: string
+		cpf?: string
+		phoneNumber?: string
+		email?: string
+		passwordHash?: string
+	}) {
+		let updated = false
+
+		if (details.name && details.name !== this.props.name) {
+			if (!details.name || details.name.trim().length === 0) {
+				throw new Error('Nome não pode ser vazio')
+			}
+			this.props.name = details.name
+			updated = true
+		}
+
+		if (details.cpf && details.cpf !== this.props.cpf) {
+			if (!details.cpf || details.cpf.trim().length === 0) {
+				throw new Error('CPF não pode ser vazio')
+			}
+			this.props.cpf = details.cpf
+			updated = true
+		}
+
+		if (details.phoneNumber && details.phoneNumber !== this.props.phoneNumber) {
+			this.props.phoneNumber = details.phoneNumber
+			updated = true
+		}
+
+		if (details.email && details.email !== this.props.email) {
+			if (!details.email || details.email.trim().length === 0) {
+				throw new Error('Email não pode ser vazio')
+			}
+			this.props.email = details.email
+			updated = true
+		}
+
+		if (
+			details.passwordHash &&
+			details.passwordHash !== this.props.passwordHash
+		) {
+			if (!details.passwordHash || details.passwordHash.trim().length === 0) {
+				throw new Error('Password não pode ser vazio')
+			}
+			this.props.passwordHash = details.passwordHash
+			updated = true
+		}
+
+		this.updateUserDetailsBase(details)
+		if (updated) {
+			this.touch()
+		}
 	}
 
 	static create(
