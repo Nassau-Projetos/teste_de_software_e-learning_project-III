@@ -1,20 +1,20 @@
 import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-id'
 import { DomainEvent } from '@/api/core/events/domain-event'
 
-export class PaymentCompletedEvent implements DomainEvent {
+export class EnrollmentActivedEvent implements DomainEvent {
 	public occurredAt: Date
 	public name: string
 
-	//TODO: Utilizar
 	constructor(
-		public readonly paymentId: UniqueEntityId,
+		public readonly studentId: UniqueEntityId,
+		public readonly courseId: UniqueEntityId,
 		public readonly enrollmentId: UniqueEntityId,
 	) {
 		this.occurredAt = new Date()
-		this.name = 'payment.completed'
+		this.name = 'enrollment.actived'
 	}
 
 	getAggregateId(): UniqueEntityId {
-		return this.paymentId
+		return this.studentId
 	}
 }

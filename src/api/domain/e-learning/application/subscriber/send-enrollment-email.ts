@@ -1,7 +1,7 @@
 import { DomainEvents } from '@/api/core/events/domain-events'
 import { EventHandler } from '@/api/core/events/event-handler'
 import { EmailService } from '../../../../core/repositories/email-service'
-import { StudentEnrolledInCourseEvent } from '../../enterprise/events/student-enrolled-in-course-event'
+import { EnrollmentActivedEvent } from '../../enterprise/events/enrollment-actived-event'
 import { CoursesRepository } from '../repositories/courses-repository'
 import { StudentsRepository } from '../repositories/students-repository'
 
@@ -15,11 +15,11 @@ export class SendEnrollmentEmailHandler implements EventHandler {
 	setupSubscriptions(): void {
 		DomainEvents.register(
 			this.sendEmail.bind(this),
-			StudentEnrolledInCourseEvent.name,
+			EnrollmentActivedEvent.name,
 		)
 	}
 
-	private async sendEmail(event: StudentEnrolledInCourseEvent) {
+	private async sendEmail(event: EnrollmentActivedEvent) {
 		const student = await this.studentsRepository.findUnique({
 			studentId: event.studentId.toString(),
 		})
