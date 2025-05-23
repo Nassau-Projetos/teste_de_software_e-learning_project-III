@@ -9,6 +9,6 @@ services:
       MYSQL_ROOT_PASSWORD: 'dev'
       MYSQL_DATABASE: 'elearning'
     ports:
-      - 5432:5432
+      - 3306:3306
     volumes:
       - mysql_elearning:/data/mysql
