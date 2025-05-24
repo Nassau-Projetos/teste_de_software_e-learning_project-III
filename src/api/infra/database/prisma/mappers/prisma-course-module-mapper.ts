@@ -13,7 +13,9 @@ export class PrismaCourseModuleMapper {
 				title: persistenceCourseModule.title,
 				description: persistenceCourseModule.description ?? undefined,
 				order: persistenceCourseModule.order,
-				courseId: new UniqueEntityId(persistenceCourseModule.courseId ?? undefined),
+				courseId: new UniqueEntityId(
+					persistenceCourseModule.courseId ?? undefined,
+				),
 				createdAt: persistenceCourseModule.createdAt,
 				updatedAt: persistenceCourseModule.updatedAt ?? undefined,
 				publishedAt: persistenceCourseModule.publishedAt ?? undefined,
@@ -22,7 +24,9 @@ export class PrismaCourseModuleMapper {
 		)
 	}
 
-	static toPrisma(domainCourseModule: CourseModule): Prisma.CourseModuleUncheckedCreateInput {
+	static toPrisma(
+		domainCourseModule: CourseModule,
+	): Prisma.CourseModuleUncheckedCreateInput {
 		const statusMap: Record<number, PrismaCourseStatus> = {
 			1: PrismaCourseStatus.DRAFT,
 			2: PrismaCourseStatus.PUBLISHED,

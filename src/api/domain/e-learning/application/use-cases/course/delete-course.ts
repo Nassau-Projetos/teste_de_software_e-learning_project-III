@@ -50,9 +50,7 @@ export class DeleteCourseUseCase {
 		category.decrementCourseCount()
 		instructor.removeCourse(course.id)
 
-		await this.categoryRepository.update(category.id.toNumber(), {
-			courseCount: category.courseCount,
-		})
+		await this.categoryRepository.save(category)
 		await this.instructorRepository.save(instructor)
 		await this.courseRepository.remove(course)
 
