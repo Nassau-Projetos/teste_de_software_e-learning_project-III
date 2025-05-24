@@ -62,7 +62,7 @@ export class PrismaCourseMapper {
 	static toPrisma(domainCourse: Course): Prisma.CourseCreateInput {
 		const levelMap: Record<number, PrismaCourseLevel> = {
 			1: PrismaCourseLevel.BEGINNER,
-			2: PrismaCourseLevel.INTERMEDIATE,
+			2: PrismaCourseLevel.INTERMEDIARY,
 			3: PrismaCourseLevel.ADVANCED,
 		}
 

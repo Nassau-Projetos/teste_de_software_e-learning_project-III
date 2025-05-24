@@ -26,6 +26,7 @@
     "@nestjs/platform-fastify": "^11.1.0",
     "@prisma/client": "6.8.2",
     "dayjs": "1.11.13",
+    "nest": "0.1.6",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
