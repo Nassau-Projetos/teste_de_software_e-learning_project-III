@@ -10,12 +10,32 @@ import { PrismaService } from '../prisma.service'
 @Injectable()
 export class PrismaStudentRepository implements StudentsRepository {
 	constructor(private prisma: PrismaService) {}
+
 	async findUnique({
 		studentId,
 	}: FindUniqueStudentQuery): Promise<Student | null> {
 		const student = await this.prisma.student.findUnique({
 			where: { id: studentId },
 			include: { user: true },
+		})
+
+		if (!student) return null
+
+		return PrismaStudentMapper.toDomain(student)
+	}
+
+	async findByEmail({
+		email,
+	}: FindUniqueStudentQuery): Promise<Student | null> {
+		const student = await this.prisma.student.findFirst({
+			where: {
+				user: {
+					email,
+				},
+			},
+			include: {
+				user: true,
+			},
 		})
 
 		if (!student) return null

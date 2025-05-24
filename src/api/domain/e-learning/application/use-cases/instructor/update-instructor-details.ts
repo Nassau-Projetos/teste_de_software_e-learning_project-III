@@ -9,7 +9,6 @@ interface UpdateInstructorUseCaseRequest {
 	data: {
 		name?: string
 		bio?: string
-		cpf?: string
 		phoneNumber?: string
 		email?: string
 		password?: string
@@ -33,7 +32,7 @@ export class UpdateInstructorUseCase {
 		const instructor = await this.instructorRepository.findUnique({
 			instructorId,
 		})
-		const { name, cpf, email, password, bio, phoneNumber } = data
+		const { name, email, password, bio, phoneNumber } = data
 
 		if (!instructor) {
 			return left(new ResourceNotFoundError())
@@ -41,7 +40,6 @@ export class UpdateInstructorUseCase {
 
 		instructor.updateDetails({
 			name,
-			cpf,
 			email,
 			passwordHash: password,
 			bio,

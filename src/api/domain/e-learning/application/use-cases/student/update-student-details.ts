@@ -8,7 +8,6 @@ interface UpdateStudentUseCaseRequest {
 	studentId: string
 	data: {
 		name?: string
-		cpf?: string
 		phoneNumber?: string
 		email?: string
 		password?: string
@@ -32,7 +31,7 @@ export class UpdateStudentUseCase {
 		const student = await this.studentRepository.findUnique({
 			studentId,
 		})
-		const { name, cpf, email, password, phoneNumber } = data
+		const { name, email, password, phoneNumber } = data
 
 		if (!student) {
 			return left(new ResourceNotFoundError())
@@ -40,7 +39,6 @@ export class UpdateStudentUseCase {
 
 		student.updateDetails({
 			name,
-			cpf,
 			email,
 			passwordHash: password,
 			phoneNumber,

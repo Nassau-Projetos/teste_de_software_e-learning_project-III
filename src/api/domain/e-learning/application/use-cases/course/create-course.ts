@@ -72,7 +72,7 @@ export class CreateCourseUseCase {
 		await this.categoryRepository.update(category.id.toNumber(), {
 			courseCount: category.courseCount,
 		})
-		await this.instructorRepository.update(instructorId, { courses: [course] })
+		await this.instructorRepository.save(instructor)
 		await this.courseRepository.create(course)
 
 		return right({ course })

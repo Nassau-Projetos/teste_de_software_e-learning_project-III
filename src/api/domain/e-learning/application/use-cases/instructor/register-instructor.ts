@@ -1,6 +1,8 @@
-import { Either, right } from '@/api/core/either/either'
+import { Either, left, right } from '@/api/core/either/either'
+import { HashGenerator } from '../../../cryptography/hash-generator'
 import { Instructor } from '../../../enterprise/entities/instructor'
 import { InstructorsRepository } from '../../repositories/instructors-repository'
+import { UserAlreadyExistsError } from '../errors/user-already-exists-error'
 
 interface CreateInstructorUseCaseRequest {
 	name: string
@@ -12,14 +14,17 @@ interface CreateInstructorUseCaseRequest {
 }
 
 type CreateInstructorUseCaseResponse = Either<
-	null,
+	UserAlreadyExistsError,
 	{
 		instructor: Instructor
 	}
 >
 
 export class CreateInstructorUseCase {
-	constructor(private instructorRepository: InstructorsRepository) {}
+	constructor(
+		private instructorRepository: InstructorsRepository,
+		private hashGenerator: HashGenerator,
+	) {}
 
 	async execute({
 		name,
@@ -29,13 +34,23 @@ export class CreateInstructorUseCase {
 		email,
 		passwordHash,
 	}: CreateInstructorUseCaseRequest): Promise<CreateInstructorUseCaseResponse> {
+		const instructorWithSameEmail = await this.instructorRepository.findUnique({
+			email,
+		})
+
+		if (instructorWithSameEmail) {
+			return left(new UserAlreadyExistsError(email))
+		}
+
+		const hashedPassword = await this.hashGenerator.hash(passwordHash)
+
 		const instructor = Instructor.create({
 			name,
 			bio,
 			cpf,
 			phoneNumber,
 			email,
-			passwordHash,
+			passwordHash: hashedPassword,
 		})
 
 		await this.instructorRepository.create(instructor)

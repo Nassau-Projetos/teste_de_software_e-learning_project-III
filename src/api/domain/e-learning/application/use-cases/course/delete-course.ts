@@ -53,9 +53,7 @@ export class DeleteCourseUseCase {
 		await this.categoryRepository.update(category.id.toNumber(), {
 			courseCount: category.courseCount,
 		})
-		await this.instructorRepository.update(instructorId, {
-			courses: instructor?.courses,
-		})
+		await this.instructorRepository.save(instructor)
 		await this.courseRepository.remove(course)
 
 		return right(null)
