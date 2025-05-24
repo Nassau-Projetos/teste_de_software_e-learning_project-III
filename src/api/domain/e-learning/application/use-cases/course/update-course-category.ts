@@ -56,13 +56,8 @@ export class UpdateCourseCategoryUseCase {
 			oldCategory.decrementCourseCount()
 			newCategory.incrementCourseCount()
 
-			await this.categoryRepository.update(oldCategory.id.toNumber(), {
-				courseCount: oldCategory.courseCount,
-			})
-
-			await this.categoryRepository.update(newCategory.id.toNumber(), {
-				courseCount: newCategory.courseCount,
-			})
+			await this.categoryRepository.save(oldCategory)
+			await this.categoryRepository.save(newCategory)
 
 			course.changeCategory(newCategory)
 		}
