@@ -1,3 +1,4 @@
+import { Value } from '@prisma/client/runtime/library'
 import { CourseCategory } from '../../enterprise/entities/course-category'
 
 export abstract class CourseCategorysRepository {
@@ -6,19 +7,19 @@ export abstract class CourseCategorysRepository {
 	): Promise<CourseCategory | null>
 	abstract create(data: CourseCategory): Promise<CourseCategory>
 	abstract update(
-		categoryId: number,
+		categoryId: Number,
 		data: UpdateCourseCategoryOptions,
 	): Promise<CourseCategory | null>
-	abstract delete(categoryId: number): Promise<void>
+	abstract delete(categoryId: Number): Promise<void>
 }
 
-abstract class FindUniqueCourseCategoryQuery {
-	abstract categoryId?: number
+export abstract class FindUniqueCourseCategoryQuery {
+	abstract categoryId?: Number
 	abstract name?: string
 }
 
-abstract class UpdateCourseCategoryOptions {
+export abstract class UpdateCourseCategoryOptions {
 	abstract name?: string
 	abstract icon?: string
-	abstract courseCount?: number
+	abstract courseCount?: Number
 }
