@@ -10,12 +10,32 @@ import { PrismaService } from '../prisma.service'
 @Injectable()
 export class PrismaInstructorRepository implements InstructorsRepository {
 	constructor(private prisma: PrismaService) {}
+
 	async findUnique({
 		instructorId,
 	}: FindUniqueInstructorQuery): Promise<Instructor | null> {
 		const instructor = await this.prisma.instructor.findUnique({
 			where: { id: instructorId },
 			include: { user: true },
+		})
+
+		if (!instructor) return null
+
+		return PrismaInstructorMapper.toDomain(instructor)
+	}
+
+	async findByEmail({
+		email,
+	}: FindUniqueInstructorQuery): Promise<Instructor | null> {
+		const instructor = await this.prisma.instructor.findFirst({
+			where: {
+				user: {
+					email,
+				},
+			},
+			include: {
+				user: true,
+			},
 		})
 
 		if (!instructor) return null
@@ -30,9 +50,12 @@ export class PrismaInstructorRepository implements InstructorsRepository {
 	}
 
 	async save(instructor: Instructor): Promise<void> {
-		const data = PrismaInstructorMapper.toPrisma(instructor)
+		const data = PrismaInstructorMapper.toPrismaUpdate(instructor)
 
-		await this.prisma.instructor.update({ where: { id: data.id }, data })
+		await this.prisma.instructor.update({
+			where: { id: instructor.id.toString() },
+			data,
+		})
 	}
 
 	async remove(instructor: Instructor): Promise<void> {

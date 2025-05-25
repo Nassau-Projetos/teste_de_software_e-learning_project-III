@@ -1,13 +1,17 @@
 import {
 	CoursesRepository,
+	FindManyCourseByCategoryIdQuery,
 	FindUniqueCourseQuery,
 } from '@/api/domain/e-learning/application/repositories/courses-repository'
 import { Course } from '@/api/domain/e-learning/enterprise/entities/course'
+import { Injectable } from '@nestjs/common'
 import { PrismaCourseMapper } from '../mappers/prisma-course-mapper'
 import { PrismaService } from '../prisma.service'
 
+@Injectable()
 export class PrismaCourseRepository implements CoursesRepository {
 	constructor(private prisma: PrismaService) {}
+
 	async findUnique({
 		courseId,
 	}: FindUniqueCourseQuery): Promise<Course | null> {
@@ -29,9 +33,27 @@ export class PrismaCourseRepository implements CoursesRepository {
 		return courses.map((course) => PrismaCourseMapper.toDomain(course))
 	}
 
+	async findManyByCategoryId({
+		categoryId,
+		params,
+	}: FindManyCourseByCategoryIdQuery): Promise<Course[]> {
+		const page = params?.page ?? 1
+		const take = params?.limit ?? 20
+
+		const courses = await this.prisma.course.findMany({
+			where: { category: { id: categoryId } },
+			take,
+			skip: (page - 1) * take,
+			include: { category: true },
+		})
+
+		return courses.map(PrismaCourseMapper.toDomain)
+	}
+
 	async create(data: Course): Promise<void> {
 		await this.prisma.course.create({
 			data: PrismaCourseMapper.toPrisma(data),
+			include: { category: true },
 		})
 	}
 

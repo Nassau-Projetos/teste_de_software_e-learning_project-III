@@ -4,6 +4,7 @@ export abstract class CourseCategorysRepository {
 	abstract findUnique(
 		query: FindUniqueCourseCategoryQuery,
 	): Promise<CourseCategory | null>
+	abstract findByName(params: { name: string }): Promise<CourseCategory | null>
 	abstract create(data: CourseCategory): Promise<CourseCategory>
 	abstract save(courseCategory: CourseCategory): Promise<void>
 	abstract delete(categoryId: number): Promise<void>

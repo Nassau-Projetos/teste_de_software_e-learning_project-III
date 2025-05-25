@@ -1,10 +1,12 @@
 import { CreateCourseUseCase } from '@/api/domain/e-learning/application/use-cases/course/create-course'
-import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common'
+import { CurrentUser } from '@/api/infra/auth/current-user-decorator'
+import { JwtAuthGuard } from '@/api/infra/auth/jwt-auth.guard'
+import { UserPayload } from '@/api/infra/auth/jwt.strategy'
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import { z } from 'zod'
-import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '../../../pipes/zod-validation-pipe'
 
 const createCourseBodySchema = z.object({
-	instructorId: z.string().uuid(),
 	title: z.string(),
 	description: z.string(),
 	thumbnailUrl: z.string(),
@@ -14,26 +16,32 @@ const createCourseBodySchema = z.object({
 	level: z.string(),
 })
 
-type createCourseBodySchema = z.infer<typeof createCourseBodySchema>
+const bodyValidationPipe = new ZodValidationPipe(createCourseBodySchema)
+
+type CreateCourseBodySchema = z.infer<typeof createCourseBodySchema>
 
 @Controller('/courses')
+@UseGuards(JwtAuthGuard)
 export class CreateCourseController {
 	constructor(private createCourseUseCase: CreateCourseUseCase) {}
 
 	@Post()
 	@HttpCode(201)
-	@UsePipes(new ZodValidationPipe(createCourseBodySchema))
-	async handle(@Body() body: createCourseBodySchema) {
+	async handle(
+		@Body(bodyValidationPipe) body: CreateCourseBodySchema,
+		@CurrentUser() user: UserPayload,
+	) {
 		const {
 			categoryId,
 			description,
 			duration,
-			instructorId,
 			level,
 			price,
 			thumbnailUrl,
 			title,
 		} = body
+
+		const instructorId = user.sub
 
 		const result = await this.createCourseUseCase.execute({
 			categoryId,

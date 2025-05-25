@@ -48,4 +48,16 @@ export class PrismaInstructorMapper {
 			},
 		}
 	}
+
+	static toPrismaUpdate(
+		domainInstructor: Instructor,
+	): Prisma.InstructorUpdateInput {
+		return {
+			name: domainInstructor.name,
+			bio: domainInstructor.bio,
+			cpf: domainInstructor.cpf,
+			phoneNumber: domainInstructor.phoneNumber,
+			updatedAt: domainInstructor.updatedAt,
+		}
+	}
 }

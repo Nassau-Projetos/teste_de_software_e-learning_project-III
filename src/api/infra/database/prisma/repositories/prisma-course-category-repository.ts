@@ -3,18 +3,33 @@ import {
 	FindUniqueCourseCategoryQuery,
 } from '@/api/domain/e-learning/application/repositories/course-catogories-repository'
 import { CourseCategory } from '@/api/domain/e-learning/enterprise/entities/course-category'
+import { Injectable } from '@nestjs/common'
 import { PrismaCourseCategoryMapper } from '../mappers/prisma-course-category-mapper'
 import { PrismaService } from '../prisma.service'
 
+@Injectable()
 export class PrismaCourseCategoryRepository
 	implements CourseCategorysRepository
 {
 	constructor(private prisma: PrismaService) {}
+
 	async findUnique({
 		categoryId,
 	}: FindUniqueCourseCategoryQuery): Promise<CourseCategory | null> {
 		const courseCategory = await this.prisma.courseCategory.findUnique({
 			where: { id: categoryId },
+		})
+
+		if (!courseCategory) return null
+
+		return PrismaCourseCategoryMapper.toDomain(courseCategory)
+	}
+
+	async findByName(params: { name: string }): Promise<CourseCategory | null> {
+		const courseCategory = await this.prisma.courseCategory.findFirst({
+			where: {
+				name: params.name,
+			},
 		})
 
 		if (!courseCategory) return null

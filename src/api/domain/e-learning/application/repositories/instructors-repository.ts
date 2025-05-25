@@ -5,6 +5,9 @@ export abstract class InstructorsRepository {
 	abstract findUnique(
 		query: FindUniqueInstructorQuery,
 	): Promise<Instructor | null>
+	abstract findByEmail(
+		query: FindUniqueInstructorQuery,
+	): Promise<Instructor | null>
 	abstract create(instructor: Instructor): Promise<void>
 	abstract save(instructor: Instructor): Promise<void>
 	abstract remove(instructor: Instructor): Promise<void>

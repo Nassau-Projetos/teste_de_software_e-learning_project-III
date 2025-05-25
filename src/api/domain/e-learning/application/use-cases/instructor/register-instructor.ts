@@ -4,7 +4,7 @@ import { Instructor } from '../../../enterprise/entities/instructor'
 import { InstructorsRepository } from '../../repositories/instructors-repository'
 import { UserAlreadyExistsError } from '../errors/user-already-exists-error'
 
-interface CreateInstructorUseCaseRequest {
+interface RegisterInstructorUseCaseRequest {
 	name: string
 	bio?: string
 	cpf: string
@@ -13,14 +13,14 @@ interface CreateInstructorUseCaseRequest {
 	passwordHash: string
 }
 
-type CreateInstructorUseCaseResponse = Either<
+type RegisterInstructorUseCaseResponse = Either<
 	UserAlreadyExistsError,
 	{
 		instructor: Instructor
 	}
 >
 
-export class CreateInstructorUseCase {
+export class RegisterInstructorUseCase {
 	constructor(
 		private instructorRepository: InstructorsRepository,
 		private hashGenerator: HashGenerator,
@@ -33,10 +33,12 @@ export class CreateInstructorUseCase {
 		phoneNumber,
 		email,
 		passwordHash,
-	}: CreateInstructorUseCaseRequest): Promise<CreateInstructorUseCaseResponse> {
-		const instructorWithSameEmail = await this.instructorRepository.findUnique({
-			email,
-		})
+	}: RegisterInstructorUseCaseRequest): Promise<RegisterInstructorUseCaseResponse> {
+		const instructorWithSameEmail = await this.instructorRepository.findByEmail(
+			{
+				email,
+			},
+		)
 
 		if (instructorWithSameEmail) {
 			return left(new UserAlreadyExistsError(email))

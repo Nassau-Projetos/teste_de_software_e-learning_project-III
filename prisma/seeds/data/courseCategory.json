@@ -1,0 +1,27 @@
+[
+	{
+		"id": 1,
+		"name": "TI",
+		"icon": "TI"
+	},
+	{
+		"id": 2,
+		"name": "DESIGN",
+		"icon": "DESIGN"
+	},
+	{
+		"id": 3,
+		"name": "LANGUAGES",
+		"icon": "LANGUAGES"
+	},
+	{
+		"id": 4,
+		"name": "MARKETING",
+		"icon": "MARKETING"
+	},
+	{
+		"id": 5,
+		"name": "BUSINESS",
+		"icon": "BUSINESS"
+	}
+]

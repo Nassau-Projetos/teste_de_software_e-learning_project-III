@@ -4,7 +4,7 @@ import { Enrollment } from '../../../enterprise/entities/enrollment'
 import { CoursesRepository } from '../../repositories/courses-repository'
 import { EnrollmentsRepository } from '../../repositories/enrollment-repository'
 import { StudentsRepository } from '../../repositories/students-repository'
-import { CourseNotPublishedError } from '../errors/course-not-published-error'
+import { CourseNotPublishedError } from '../errors/course/course-not-published-error'
 
 interface RequestEnrollStudentUseCaseRequest {
 	studentId: string

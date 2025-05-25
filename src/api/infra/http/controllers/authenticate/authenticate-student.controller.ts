@@ -13,7 +13,7 @@ type AuthenticateStudentBodySchema = z.infer<
 	typeof authenticateStudentBodySchema
 >
 
-@Controller('/sessions')
+@Controller('/sessions/students')
 export class AuthenticateStudentController {
 	constructor(
 		private authenticateStudentUseCase: AuthenticateStudentUseCase,

@@ -11,18 +11,18 @@ const createAccountStudentBodySchema = z.object({
 	password: z.string(),
 })
 
-type createAccountStudentBodySchema = z.infer<
+type CreateAccountStudentBodySchema = z.infer<
 	typeof createAccountStudentBodySchema
 >
 
-@Controller('/accounts/student')
+@Controller('/accounts/students')
 export class CreateAccountStudentController {
 	constructor(private registerStudent: RegisterStudentUseCase) {}
 
 	@Post()
 	@HttpCode(201)
 	@UsePipes(new ZodValidationPipe(createAccountStudentBodySchema))
-	async handle(@Body() body: createAccountStudentBodySchema) {
+	async handle(@Body() body: CreateAccountStudentBodySchema) {
 		const { name, cpf, phoneNumber, email, password } = body
 
 		const result = await this.registerStudent.execute({

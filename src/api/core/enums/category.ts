@@ -7,7 +7,7 @@ export enum CATEGORY {
 }
 
 export const CATEGORY_INFO = {
-	[CATEGORY.TI]: { label: 'Tecnologia da Informação', key: 'TI' },
+	[CATEGORY.TI]: { label: 'TI', key: 'TI' },
 	[CATEGORY.DESIGN]: { label: 'Design', key: 'DESIGN' },
 	[CATEGORY.LANGUAGES]: { label: 'Idiomas', key: 'LANGUAGES' },
 	[CATEGORY.MARKETING]: { label: 'Marketing', key: 'MARKETING' },
