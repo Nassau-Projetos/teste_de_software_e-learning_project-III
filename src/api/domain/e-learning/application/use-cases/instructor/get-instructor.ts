@@ -4,7 +4,7 @@ import { Instructor } from '../../../enterprise/entities/instructor'
 import { InstructorsRepository } from '../../repositories/instructors-repository'
 
 interface GetInstructorUseCaseRequest {
-	instructorId?: string
+	email?: string
 }
 
 type GetInstructorUseCaseResponse = Either<
@@ -18,10 +18,10 @@ export class GetInstructorUseCase {
 	constructor(private instructorRepository: InstructorsRepository) {}
 
 	async execute({
-		instructorId,
+		email,
 	}: GetInstructorUseCaseRequest): Promise<GetInstructorUseCaseResponse> {
 		const instructor = await this.instructorRepository.findUnique({
-			instructorId,
+			email,
 		})
 
 		if (!instructor) {

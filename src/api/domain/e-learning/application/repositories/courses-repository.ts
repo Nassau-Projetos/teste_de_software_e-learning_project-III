@@ -1,9 +1,12 @@
+import { PaginationParams } from '@/api/core/repositories/pagination-params'
 import { Course } from '../../enterprise/entities/course'
 import { CourseModule } from '../../enterprise/entities/course-module'
 
 export abstract class CoursesRepository {
 	abstract findUnique(query: FindUniqueCourseQuery): Promise<Course | null>
-	abstract findMany(): Promise<Course[]>
+	abstract findManyByCategoryId(
+		query: FindManyCourseByCategoryIdQuery,
+	): Promise<Course[]>
 	abstract create(data: Course): Promise<void>
 	abstract save(course: Course): Promise<void>
 	abstract remove(course: Course): Promise<void>
@@ -12,6 +15,11 @@ export abstract class CoursesRepository {
 export abstract class FindUniqueCourseQuery {
 	abstract courseId?: string
 	abstract slug?: string
+}
+
+export abstract class FindManyCourseByCategoryIdQuery {
+	abstract categoryId?: number
+	abstract params?: PaginationParams
 }
 
 export abstract class UpdateCourseOptions {

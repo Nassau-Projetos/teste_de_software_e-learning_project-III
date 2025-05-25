@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  INSTRUCTOR
+  STUDENT
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIARY
+  ADVANCED
+}
+
+enum EnrollmentStatus {
+  PENDING
+  ACTIVE
+  CANCELED
+}
+
+model User {
+  id        String   @id @default(uuid(7))
+  email     String   @unique
+  avatarUrl String?
+  password  String
+  role      UserRole @default(STUDENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  instructor Instructor?
+  student    Student?
+
+  @@map("users")
+}
+
+model Instructor {
+  id          String    @id @default(uuid(7))
+  name        String
+  bio         String?
+  cpf         String    @unique @db.VarChar(11)
+  phoneNumber String?   @unique @db.VarChar(12)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  courses Course[]
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  @@map("instructors")
+}
+
+model Student {
+  id          String    @id @default(uuid(7))
+  name        String
+  cpf         String    @unique @db.VarChar(11)
+  phoneNumber String?   @unique @db.VarChar(12)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  enrollments Enrollment[]
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  @@map("students")
+}
+
+model Course {
+  id                 String       @id @default(uuid(7))
+  title              String
+  description        String?
+  slug               String       @unique
+  thumbnailUrl       String
+  duration           Int
+  studentsCount      Int
+  priceAmount        Decimal      @db.Decimal(10, 2)
+  priceCurrency      String
+  discountPercentage Decimal?     @db.Decimal(5, 2)
+  discountExpiresAt  DateTime?
+  status             CourseStatus
+  level              CourseLevel
+  rating             Decimal      @default(0.0) @db.Decimal(3, 2)
+  ratingCount        Int          @default(0)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @default(now()) @updatedAt
+  publishedAt        DateTime?    @db.Date()
+
+  modules     CourseModule[]
+  enrollments Enrollment[]
+  ratings     CourseRating[]
+
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+  instructorId String
+
+  category         CourseCategory @relation(fields: [courseCategoryId], references: [id])
+  courseCategoryId Int
+
+  @@map("courses")
+}
+
+model CourseCategory {
+  id          Int       @id @default(autoincrement())
+  name        String
+  icon        String
+  courseCount Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @default(now()) @updatedAt
+  Course      Course[]
+}
+
+model CourseModule {
+  id          String       @id @default(uuid(7))
+  title       String
+  description String?
+  order       Int
+  status      CourseStatus
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime?    @default(now()) @updatedAt
+  publishedAt DateTime?    @db.Date()
+
+  Course   Course? @relation(fields: [courseId], references: [id])
+  courseId String?
+}
+
+model CourseRating {
+  id    Int @id @default(autoincrement())
+  value Int
+
+  Course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+}
+
+model Enrollment {
+  id          String           @id @default(uuid(7))
+  progress    Int
+  status      EnrollmentStatus @default(PENDING)
+  requestAt   DateTime         @db.Date()
+  enrolledAt  DateTime?        @db.Date()
+  completedAt DateTime?        @db.Date()
+  canceledAt  DateTime?        @db.Date()
+
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId String
+  Course    Course  @relation(fields: [courseId], references: [id])
+  courseId  String
+
+  @@map("enrollments")
+}

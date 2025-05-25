@@ -1,5 +1,5 @@
 import { AggregateRoot } from '@/api/core/entities/aggregate-root'
-import { UniqueEntityId } from 'src/api/core/entities/value-objects/unique-entity-id'
+import { UniqueEntityId } from '../../../../../api/core/entities/value-objects/unique-entity-id'
 import { Optional } from 'src/api/core/types/optional'
 import { CourseCategory } from './course-category'
 import { CourseModule } from './course-module'

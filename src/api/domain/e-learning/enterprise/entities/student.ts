@@ -146,7 +146,6 @@ export class Student extends User<StudentProps> {
 
 	updateDetails(details: {
 		name?: string
-		cpf?: string
 		phoneNumber?: string
 		email?: string
 		passwordHash?: string
@@ -158,14 +157,6 @@ export class Student extends User<StudentProps> {
 				throw new Error('Nome não pode ser vazio')
 			}
 			this.props.name = details.name
-			updated = true
-		}
-
-		if (details.cpf && details.cpf !== this.props.cpf) {
-			if (!details.cpf || details.cpf.trim().length === 0) {
-				throw new Error('CPF não pode ser vazio')
-			}
-			this.props.cpf = details.cpf
 			updated = true
 		}
 

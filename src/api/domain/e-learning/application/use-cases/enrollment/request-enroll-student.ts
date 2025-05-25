@@ -1,10 +1,10 @@
 import { Either, left, right } from '@/api/core/either/either'
-import { CourseNotPublishedError } from '@/api/core/errors/errors/course-not-published-error'
 import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
 import { Enrollment } from '../../../enterprise/entities/enrollment'
 import { CoursesRepository } from '../../repositories/courses-repository'
 import { EnrollmentsRepository } from '../../repositories/enrollment-repository'
 import { StudentsRepository } from '../../repositories/students-repository'
+import { CourseNotPublishedError } from '../errors/course/course-not-published-error'
 
 interface RequestEnrollStudentUseCaseRequest {
 	studentId: string
