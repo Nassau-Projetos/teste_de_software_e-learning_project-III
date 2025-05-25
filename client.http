@@ -1,0 +1,75 @@
+@baseUrl = http://localhost:3333
+@authToken = {{authenticate.response.body.access_token}}
+
+# @name create_account_students
+POST {{baseUrl}}/accounts/students
+Content-Type: application/json
+
+{
+    "name": "Dorival Rodrigues",
+    "email": "teste@student.com.br",
+    "password": "123456",
+    "cpf": "11111111113",
+    "phoneNumber": "123"
+}
+
+###
+
+# @name create_account_instructor
+POST {{baseUrl}}/accounts/instructors
+Content-Type: application/json
+
+{
+    "name": "Dorival Professor",
+    "bio": "Tenho diploma",
+    "email": "teste@instructor.com.br",
+    "passwordHash": "123456",
+    "cpf": "11111451112",
+    "phoneNumber": "123"
+}
+
+###
+
+# @name authenticate
+POST {{baseUrl}}/sessions/students
+Content-Type: application/json
+
+{
+    "email": "teste@student.com.br",
+    "password": "123456"
+}
+
+###
+
+# @name authenticate
+POST {{baseUrl}}/sessions/instructors
+Content-Type: application/json
+
+{
+    "email": "teste@instructor.com.br",
+    "password": "123456"
+}
+
+###
+
+# @name create_course
+POST {{baseUrl}}/courses
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "title": "Curso Design",
+    "description": "Apenas um teste",
+    "thumbnailUrl": "Apenas um teste",
+    "price": 15,
+    "duration": 60,
+    "categoryId": 2,
+    "level": "BEGINNER"
+}
+
+###
+
+# @name fetch_courses_by_category
+GET {{baseUrl}}/courses?categoryName=ti&page=1&limit=20
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

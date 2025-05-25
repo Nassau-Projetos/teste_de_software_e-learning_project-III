@@ -67,7 +67,6 @@ export class Instructor extends User<InstructorProps> {
 	updateDetails(details: {
 		name?: string
 		bio?: string
-		cpf?: string
 		phoneNumber?: string
 		email?: string
 		passwordHash?: string
@@ -84,14 +83,6 @@ export class Instructor extends User<InstructorProps> {
 
 		if (details.bio && details.bio !== this.props.bio) {
 			this.props.bio = details.bio
-			updated = true
-		}
-
-		if (details.cpf && details.cpf !== this.props.cpf) {
-			if (!details.cpf || details.cpf.trim().length === 0) {
-				throw new Error('Nome não pode ser vazio')
-			}
-			this.props.cpf = details.cpf
 			updated = true
 		}
 
@@ -135,15 +126,3 @@ export class Instructor extends User<InstructorProps> {
 		)
 	}
 }
-
-const instructor1 = Instructor.create({
-	name: 'Teste1',
-	cpf: '555555555',
-	email: 'test@gmail.com',
-	passwordHash: 'secret1595',
-})
-
-console.log(instructor1.id.toString()) // UUID gerado automaticamente
-console.log(instructor1.cpf) // Slug criado a partir do título
-console.log(instructor1.email) // Status.DRAFT
-console.log(instructor1.createdAt) // Data atual
