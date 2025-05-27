@@ -6,7 +6,7 @@ export class RequestEnrollStudentPresenter {
 			id: enrollment.id.toString(),
 			studentId: enrollment.studentId.toString(),
 			courseId: enrollment.courseId.toString(),
-			status: enrollment.status.value,
+			status: enrollment.status.label,
 			requestAt: enrollment.requestAt.toISOString(),
 		}
 	}

@@ -13,7 +13,7 @@ import { Discount } from './value-objects/price/discount'
 import { Price } from './value-objects/price/price'
 import { Slug } from './value-objects/slug/slug'
 
-interface CourseProps {
+export interface CourseProps {
 	title: string
 	description?: string | null
 	slug: Slug

@@ -16,6 +16,7 @@ import {
 } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../../../pipes/zod-validation-pipe'
+import { RequestEnrollStudentPresenter } from '../../../presenters/student/request-enroll-presenter'
 
 const uuidParamPipe = new ZodValidationPipe(z.string().uuid())
 
@@ -55,6 +56,6 @@ export class RequestEnrollStudentController {
 
 		const { enrollment } = result.value
 
-		return { enrollment }
+		return RequestEnrollStudentPresenter.toHttp(enrollment)
 	}
 }

@@ -10,7 +10,7 @@ export class StudentProfilePresenter {
 			avatarUrl: student.avatarUrl,
 			enrollments: student.enrollments.map((enrollment) => ({
 				courseId: enrollment.courseId,
-				status: enrollment.status.value,
+				status: enrollment.status.label,
 				progress: enrollment.progress,
 				paymentId: enrollment.paymentId?.toString(),
 				requestAT: enrollment.requestAt.toISOString(),
