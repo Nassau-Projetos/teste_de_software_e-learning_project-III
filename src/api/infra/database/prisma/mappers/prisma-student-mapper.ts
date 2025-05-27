@@ -2,11 +2,13 @@ import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-
 import { Enrollment } from '@/api/domain/e-learning/enterprise/entities/enrollment'
 import { Student } from '@/api/domain/e-learning/enterprise/entities/student'
 import { EnrollmentStatus } from '@/api/domain/e-learning/enterprise/entities/value-objects/enrollment/enrollment-status'
+import { UserRole } from '@/api/domain/e-learning/enterprise/entities/value-objects/user/role'
 import {
 	Prisma,
 	Enrollment as PrismaEnrollment,
 	Student as PrismaStudent,
 	User as PrismaUser,
+	UserRole as PrismaUserRole,
 } from '@prisma/client'
 
 type PrismaStudentWithUserAndEnrollments = PrismaStudent & {
@@ -27,6 +29,7 @@ export class PrismaStudentMapper {
 				avatarUrl: user.avatarUrl,
 				name: persistenceStudent.name,
 				cpf: persistenceStudent.cpf,
+				role: UserRole.fromValue(user.role),
 				phoneNumber: persistenceStudent.phoneNumber,
 				enrollments: enrollments.map((enrollment) =>
 					Enrollment.createPedingEnrollment(
@@ -49,6 +52,9 @@ export class PrismaStudentMapper {
 	}
 
 	static toPrismaCreate(domainStudent: Student): Prisma.StudentCreateInput {
+		const roleKey = domainStudent.role?.key ?? 'STUDENT'
+		const role = PrismaUserRole[roleKey as keyof typeof PrismaUserRole]
+
 		return {
 			id: domainStudent.id.toString(),
 			name: domainStudent.name,
@@ -64,6 +70,7 @@ export class PrismaStudentMapper {
 					avatarUrl: domainStudent.avatarUrl ?? undefined,
 					createdAt: domainStudent.createdAt,
 					updatedAt: domainStudent.updatedAt ?? undefined,
+					role,
 				},
 			},
 		}

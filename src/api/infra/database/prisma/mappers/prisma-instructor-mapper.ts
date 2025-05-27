@@ -8,12 +8,14 @@ import { Rating } from '@/api/domain/e-learning/enterprise/entities/value-object
 import { Discount } from '@/api/domain/e-learning/enterprise/entities/value-objects/price/discount'
 import { Price } from '@/api/domain/e-learning/enterprise/entities/value-objects/price/price'
 import { Slug } from '@/api/domain/e-learning/enterprise/entities/value-objects/slug/slug'
+import { UserRole } from '@/api/domain/e-learning/enterprise/entities/value-objects/user/role'
 import {
 	Prisma,
 	Course as PrismaCourse,
 	CourseCategory as PrismaCourseCategory,
 	Instructor as PrismaInstructor,
 	User as PrismaUser,
+	UserRole as PrismaUserRole,
 } from '@prisma/client'
 
 type PrismaInstructorWithUserAndCourses = PrismaInstructor & {
@@ -37,6 +39,7 @@ export class PrismaInstructorMapper {
 				name: persistenceInstructor.name,
 				bio: persistenceInstructor.bio,
 				cpf: persistenceInstructor.cpf,
+				role: UserRole.fromValue(user.role),
 				phoneNumber: persistenceInstructor.phoneNumber,
 				courses: courses.map((course) =>
 					Course.create(
@@ -82,6 +85,9 @@ export class PrismaInstructorMapper {
 	}
 
 	static toPrisma(domainInstructor: Instructor): Prisma.InstructorCreateInput {
+		const roleKey = domainInstructor.role?.key ?? 'INSTRUCTOR'
+		const role = PrismaUserRole[roleKey as keyof typeof PrismaUserRole]
+
 		return {
 			id: domainInstructor.id.toString(),
 			name: domainInstructor.name,
@@ -98,6 +104,7 @@ export class PrismaInstructorMapper {
 					avatarUrl: domainInstructor.avatarUrl ?? undefined,
 					createdAt: domainInstructor.createdAt,
 					updatedAt: domainInstructor.updatedAt ?? undefined,
+					role,
 				},
 			},
 		}
