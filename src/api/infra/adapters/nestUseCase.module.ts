@@ -5,6 +5,7 @@ import { CreateCourseUseCase } from '@/api/domain/e-learning/application/use-cas
 import { DeleteCourseUseCase } from '@/api/domain/e-learning/application/use-cases/instructor/delete-course'
 import { PublishCourseUseCase } from '@/api/domain/e-learning/application/use-cases/instructor/publish-course'
 
+import { FetchCourseCategoriesUseCase } from '@/api/domain/e-learning/application/use-cases/course-category/fetch-course-categories'
 import { GetCourseUseCase } from '@/api/domain/e-learning/application/use-cases/course/get-course'
 import { GetInstructorUseCase } from '@/api/domain/e-learning/application/use-cases/instructor/get-instructor'
 import { GetStudentUseCase } from '@/api/domain/e-learning/application/use-cases/student/get-student'
@@ -16,6 +17,7 @@ import { RegisterStudentUseCase } from '@/api/domain/e-learning/application/use-
 import { Module } from '@nestjs/common'
 import { CryptographyModule } from '../cryptography/cryptography.module'
 import { DatabaseModule } from '../database/database.module'
+import { NestFetchCourseCategoryUseCase } from './nest/course-category/nest-fetch-course-category'
 import { NestFetchCourseUseCase } from './nest/course/nest-fetch-course'
 import { NestFetchCourseByCategoryUseCase } from './nest/course/nest-fetch-course-by-categoryId'
 import { NestGetCourseUseCase } from './nest/course/nest-get-course'
@@ -87,6 +89,10 @@ import { NestRegisterStudentUseCase } from './nest/user/register/nest-register-s
 			provide: RequestEnrollStudentUseCase,
 			useClass: NestRequestEnrollStudentUseCase,
 		},
+		{
+			provide: FetchCourseCategoriesUseCase,
+			useClass: NestFetchCourseCategoryUseCase,
+		},
 	],
 	exports: [
 		RegisterStudentUseCase,
@@ -103,6 +109,7 @@ import { NestRegisterStudentUseCase } from './nest/user/register/nest-register-s
 		GetCourseUseCase,
 		DeleteCourseUseCase,
 		RequestEnrollStudentUseCase,
+		FetchCourseCategoriesUseCase,
 	],
 })
 export class NestUseCaseModule {}

@@ -7,7 +7,7 @@ import {
 
 export function makeCourseCategory(
 	override: Partial<CourseCategoryProps> = {},
-	categoryId: CATEGORY = CATEGORY.TI,
+	categoryId: CATEGORY = CATEGORY.DESENVOLVIMENTO_WEB,
 ) {
 	const coursecategory = CourseCategory.create(
 		{

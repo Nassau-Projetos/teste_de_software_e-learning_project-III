@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { NestUseCaseModule } from '../adapters/nestUseCase.module'
 import { CryptographyModule } from '../cryptography/cryptography.module'
 import { DatabaseModule } from '../database/database.module'
+import { FetchCourseCategoriesController } from './controllers/course-category/fetch-course-category/fetch-course-category.controller'
 import { FetchCourseByCategoryController } from './controllers/course/fetch-course-by-category/fetch-course-by-category.controller'
 import { FetchCourseController } from './controllers/course/fetch-course/fetch-course.controller'
 import { GetCourseBySlugController } from './controllers/course/get-course-by-slug/get-course-by-slug.controller'
@@ -38,6 +39,7 @@ import { CreateAccountStudentController } from './controllers/user/register/regi
 		GetCourseController,
 		DeleteCourseController,
 		RequestEnrollStudentController,
+		FetchCourseCategoriesController,
 	],
 })
 export class HttpModule {}

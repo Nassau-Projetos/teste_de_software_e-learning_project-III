@@ -7,8 +7,11 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule)
 
 	app.enableCors({
-		origin: ['*'],
+		origin: (_origin, callback) => {
+			callback(null, true)
+		},
 		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+		credentials: true,
 	})
 
 	const configService: ConfigService<Env, true> = app.get(ConfigService)

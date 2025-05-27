@@ -1,15 +1,20 @@
 export enum CATEGORY {
-	TI = 1,
-	DESIGN = 2,
-	LANGUAGES = 3,
-	MARKETING = 4,
-	BUSINESS = 5,
+	DESENVOLVIMENTO_WEB = 1,
+	FRONT_END = 2,
+	BACK_END = 3,
+	MOBILE = 4,
+	DESIGN = 5,
+	VIDEO = 6,
 }
 
 export const CATEGORY_INFO = {
-	[CATEGORY.TI]: { label: 'TI', key: 'TI' },
-	[CATEGORY.DESIGN]: { label: 'Design', key: 'DESIGN' },
-	[CATEGORY.LANGUAGES]: { label: 'Idiomas', key: 'LANGUAGES' },
-	[CATEGORY.MARKETING]: { label: 'Marketing', key: 'MARKETING' },
-	[CATEGORY.BUSINESS]: { label: 'Negócios', key: 'BUSINESS' },
+	[CATEGORY.DESENVOLVIMENTO_WEB]: {
+		label: 'Desenvolvimento Web',
+		key: 'DESENVOLVIMENTO_WEB',
+	},
+	[CATEGORY.FRONT_END]: { label: 'Frontend', key: 'FRONT_END' },
+	[CATEGORY.BACK_END]: { label: 'Backend', key: 'BACK_END' },
+	[CATEGORY.MOBILE]: { label: 'Mobile', key: 'MOBILE' },
+	[CATEGORY.DESIGN]: { label: 'UI/UX Design', key: 'DESIGN' },
+	[CATEGORY.VIDEO]: { label: 'Video & Motion', key: 'VIDEO' },
 }

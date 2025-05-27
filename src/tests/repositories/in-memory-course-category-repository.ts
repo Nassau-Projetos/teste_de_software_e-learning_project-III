@@ -1,5 +1,6 @@
 import {
 	CourseCategorysRepository,
+	FindManyCourseCategoriesQuery,
 	FindUniqueCourseCategoryQuery,
 } from '@/api/domain/e-learning/application/repositories/course-catogories-repository'
 import { CourseCategory } from '@/api/domain/e-learning/enterprise/entities/course-category'
@@ -21,6 +22,17 @@ export class InMemoryCourseCategorysRepository
 	async findByName(params: { name: string }): Promise<CourseCategory | null> {
 		const category = this.items.find((item) => item.name === params.name)
 		return category ?? null
+	}
+
+	async findMany({
+		params,
+	}: FindManyCourseCategoriesQuery): Promise<CourseCategory[]> {
+		const page = params?.page ?? 1
+		const limit = params?.limit ?? 20
+
+		const sorted = this.items.sort((a, b) => b.courseCount - a.courseCount)
+
+		return sorted.slice((page - 1) * limit, page * limit)
 	}
 
 	async create(data: CourseCategory): Promise<CourseCategory> {

@@ -1,27 +1,32 @@
 [
 	{
 		"id": 1,
-		"name": "TI",
-		"icon": "TI"
+		"name": "Desenvolvimento Web",
+		"icon": "Web"
 	},
 	{
 		"id": 2,
-		"name": "DESIGN",
-		"icon": "DESIGN"
+		"name": "Frontend",
+		"icon": "Front"
 	},
 	{
 		"id": 3,
-		"name": "LANGUAGES",
-		"icon": "LANGUAGES"
+		"name": "Backend",
+		"icon": "Back"
 	},
 	{
 		"id": 4,
-		"name": "MARKETING",
-		"icon": "MARKETING"
+		"name": "Mobile",
+		"icon": "Mobile"
 	},
 	{
 		"id": 5,
-		"name": "BUSINESS",
-		"icon": "BUSINESS"
+		"name": "UI/UX Design",
+		"icon": "Design"
+	},
+	{
+		"id": 6,
+		"name": "Video & Motion",
+		"icon": "Video"
 	}
 ]

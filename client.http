@@ -82,18 +82,24 @@ Authorization: Bearer {{authToken}}
 
 ###
 
+# @name get_categories
+GET {{baseUrl}}/categories
+Content-Type: application/json
+
+###
+
 # @name create_course
 POST {{baseUrl}}/instructors/course
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "title": "Curso Design 88",
+    "title": "Curso Web",
     "description": "Apenas um teste",
     "thumbnailUrl": "Apenas um teste",
     "price": 15,
     "duration": 60,
-    "categoryId": 2,
+    "categoryId": 1,
     "level": "BEGINNER"
 }
 

@@ -46,6 +46,9 @@ export class PrismaCourseRepository implements CoursesRepository {
 
 		const courses = await this.prisma.course.findMany({
 			where: { status: { id: statusId } },
+			orderBy: {
+				createdAt: 'desc',
+			},
 			take,
 			skip: (page - 1) * take,
 			include: { category: true, status: true },

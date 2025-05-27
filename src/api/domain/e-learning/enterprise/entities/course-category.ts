@@ -74,7 +74,7 @@ export class CourseCategory extends Entity<
 		const category = new CourseCategory(
 			{
 				...props,
-				courseCount: 0,
+				courseCount: props.courseCount ?? 0,
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

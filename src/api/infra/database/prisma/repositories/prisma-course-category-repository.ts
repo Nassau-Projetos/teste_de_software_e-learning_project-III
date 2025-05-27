@@ -1,5 +1,6 @@
 import {
 	CourseCategorysRepository,
+	FindManyCourseCategoriesQuery,
 	FindUniqueCourseCategoryQuery,
 } from '@/api/domain/e-learning/application/repositories/course-catogories-repository'
 import { CourseCategory } from '@/api/domain/e-learning/enterprise/entities/course-category'
@@ -35,6 +36,23 @@ export class PrismaCourseCategoryRepository
 		if (!courseCategory) return null
 
 		return PrismaCourseCategoryMapper.toDomain(courseCategory)
+	}
+
+	async findMany({
+		params,
+	}: FindManyCourseCategoriesQuery): Promise<CourseCategory[]> {
+		const page = params?.page ?? 1
+		const take = params?.limit ?? 20
+
+		const courseCategories = await this.prisma.courseCategory.findMany({
+			orderBy: {
+				courseCount: 'desc',
+			},
+			take,
+			skip: (page - 1) * take,
+		})
+
+		return courseCategories.map(PrismaCourseCategoryMapper.toDomain)
 	}
 
 	async create(data: CourseCategory): Promise<CourseCategory> {
