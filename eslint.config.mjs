@@ -8,7 +8,13 @@ export default tseslint.config(
 
 	{
 		files: ['**/*.ts'],
-		ignores: ['vite.config.ts', '.eslintrc.js', 'build', 'dist', 'node_modules'],
+		ignores: [
+			'vite.config.ts',
+			'.eslintrc.js',
+			'build',
+			'dist',
+			'node_modules',
+		],
 		plugins: {
 			prettier,
 		},
@@ -29,5 +35,5 @@ export default tseslint.config(
 				ignoreRestSiblings: true,
 			}],
 		},
-	}
+	},
 )
