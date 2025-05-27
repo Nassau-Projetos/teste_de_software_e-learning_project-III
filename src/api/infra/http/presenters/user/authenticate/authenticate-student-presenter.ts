@@ -8,6 +8,7 @@ export class AuthenticateStudentPresenter {
 				id: student.id.toString(),
 				name: student.name,
 				email: student.email,
+				role: student.role?.key,
 			},
 		}
 	}
