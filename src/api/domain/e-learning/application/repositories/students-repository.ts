@@ -1,9 +1,14 @@
-import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-id'
 import { Student } from '../../enterprise/entities/student'
 
 export abstract class StudentsRepository {
-	abstract findById(id: UniqueEntityId): Promise<Student | null>
-	abstract findByEmail(email: string): Promise<Student | null>
+	abstract findUnique(query: FindUniqueStudentQuery): Promise<Student | null>
+	abstract findByEmail(query: FindUniqueStudentQuery): Promise<Student | null>
+	abstract create(student: Student): Promise<void>
 	abstract save(student: Student): Promise<void>
-	abstract delete(id: UniqueEntityId): Promise<void>
+	abstract remove(student: Student): Promise<void>
+}
+
+export abstract class FindUniqueStudentQuery {
+	abstract studentId?: string
+	abstract email?: string
 }

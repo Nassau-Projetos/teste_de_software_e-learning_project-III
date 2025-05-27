@@ -1,16 +1,20 @@
 import { AggregateRoot } from '@/api/core/entities/aggregate-root'
 import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-id'
+import { DomainEvents } from '@/api/core/events/domain-events'
 import { Optional } from '@/api/core/types/optional'
+import { EnrollmentActivedEvent } from '../events/enrollment-actived-event'
 import { Payment } from './payment'
 import { EnrollmentStatus } from './value-objects/enrollment/enrollment-status'
 import { PaymentStatus } from './value-objects/payment/payment-status'
 
-interface EnrollmentProps {
+export interface EnrollmentProps {
 	studentId: UniqueEntityId
 	courseId: UniqueEntityId
+	paymentId?: UniqueEntityId | null
 	status: EnrollmentStatus
 	progress: number
-	enrolledAt: Date
+	requestAt: Date
+	enrolledAt?: Date | null
 	completedAt?: Date | null
 	canceledAt?: Date | null
 }
@@ -30,6 +34,14 @@ export class Enrollment extends AggregateRoot<EnrollmentProps> {
 
 	get progress() {
 		return this.props.progress
+	}
+
+	get paymentId() {
+		return this.props.paymentId
+	}
+
+	get requestAt() {
+		return this.props.requestAt
 	}
 
 	get enrolledAt() {
@@ -61,6 +73,12 @@ export class Enrollment extends AggregateRoot<EnrollmentProps> {
 			throw new Error('Pagamento não aprovado.')
 		}
 		this.props.status = EnrollmentStatus.ACTIVE
+		this.props.enrolledAt = new Date()
+
+		this.addDomainEvent(
+			new EnrollmentActivedEvent(this.studentId, this.courseId, this.id),
+		)
+		DomainEvents.markAggregateForDispatch(this)
 	}
 
 	cancel() {
@@ -72,7 +90,7 @@ export class Enrollment extends AggregateRoot<EnrollmentProps> {
 		this.props.canceledAt = new Date()
 	}
 
-	complete() {
+	private complete() {
 		if (this.status !== EnrollmentStatus.ACTIVE) {
 			throw new Error('A inscrição não está ativa')
 		}
@@ -81,8 +99,11 @@ export class Enrollment extends AggregateRoot<EnrollmentProps> {
 		this.props.completedAt = new Date()
 	}
 
-	static create(
-		props: Optional<EnrollmentProps, 'status' | 'progress' | 'enrolledAt'>,
+	static createPedingEnrollment(
+		props: Optional<
+			EnrollmentProps,
+			'status' | 'progress' | 'requestAt' | 'paymentId'
+		>,
 		id?: UniqueEntityId,
 	) {
 		return new Enrollment(
@@ -91,9 +112,10 @@ export class Enrollment extends AggregateRoot<EnrollmentProps> {
 				status:
 					props.status instanceof EnrollmentStatus
 						? props.status
-						: EnrollmentStatus.ACTIVE,
+						: EnrollmentStatus.PENDING,
 				progress: props.progress ?? 0,
-				enrolledAt: props.enrolledAt ?? new Date(),
+				paymentId: props.paymentId ?? null,
+				requestAt: props.requestAt ?? new Date(),
 			},
 			id,
 		)
