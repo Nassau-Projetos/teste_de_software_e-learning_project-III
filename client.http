@@ -46,6 +46,12 @@ Content-Type: application/json
 
 ###
 
+# @name fetch_instructors
+GET {{baseUrl}}/instructors
+Content-Type: application/json
+
+###
+
 # @name authenticate
 POST {{baseUrl}}/sessions/students
 Content-Type: application/json

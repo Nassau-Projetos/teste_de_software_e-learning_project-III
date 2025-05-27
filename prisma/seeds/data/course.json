@@ -1,0 +1,21 @@
+[
+  {
+    "id": "72f970e5-5d64-4dbf-8329-5dc48a57ebea",
+    "title": "Introdução ao Backend com Node.js",
+    "description": "Aprenda os fundamentos do desenvolvimento backend usando Node.js, Express e bancos de dados.",
+    "slug": "introducao-backend-nodejs",
+    "thumbnailUrl": "https://via.placeholder.com/300",
+    "duration": 180,
+    "studentsCount": 0,
+    "priceAmount": 129.90,
+    "priceCurrency": "BRL",
+    "discountPercentage": 20,
+    "discountExpiresAt": "2025-12-31T00:00:00.000Z",
+    "level": "BEGINNER",
+    "rating": 0.0,
+    "ratingCount": 0,
+    "instructorId": "4c140d15-7c2e-47e0-80c9-cae6026a0d93",
+    "courseCategoryId": 3,
+    "statusId": 1
+  }
+]

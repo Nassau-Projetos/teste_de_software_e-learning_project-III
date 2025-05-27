@@ -1,0 +1,14 @@
+[
+  {
+    "id": "9f4c7d11-5a5a-4f1a-a9a6-01efbdcf8d1a",
+    "email": "instructor@example.com",
+    "password": "$2a$08$HASHEDPASSWORD",
+    "role": "INSTRUCTOR"
+  },
+  {
+    "id": "6e36262f-7307-4701-b981-7e84e0b419e4",
+    "email": "student@example.com",
+    "password": "$2a$08$HASHEDPASSWORD",
+    "role": "STUDENT"
+  }
+]
