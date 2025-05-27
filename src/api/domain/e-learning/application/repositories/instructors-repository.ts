@@ -1,4 +1,3 @@
-import { Course } from '../../enterprise/entities/course'
 import { Instructor } from '../../enterprise/entities/instructor'
 
 export abstract class InstructorsRepository {
@@ -16,14 +15,4 @@ export abstract class InstructorsRepository {
 export abstract class FindUniqueInstructorQuery {
 	abstract instructorId?: string
 	abstract email?: string
-}
-
-export abstract class UpdateInstructorOptions {
-	abstract name?: string
-	abstract bio?: string
-	abstract cpf?: string
-	abstract courses?: Course[]
-	abstract phoneNumber?: string
-	abstract email?: string
-	abstract password?: string
 }

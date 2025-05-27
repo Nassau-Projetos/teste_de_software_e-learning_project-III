@@ -1,4 +1,3 @@
-// eslint.config.js
 import js from '@eslint/js'
 import prettier from 'eslint-plugin-prettier'
 import tseslint from 'typescript-eslint'
@@ -19,10 +18,7 @@ export default tseslint.config(
 			},
 		},
 		rules: {
-			// Apenas ativa o plugin do prettier sem sobrescrever com configs manuais
 			'prettier/prettier': 'error',
-
-			// Melhoria para variáveis não utilizadas com prefixo _
 			'@typescript-eslint/no-unused-vars': ['error', {
 				args: 'all',
 				argsIgnorePattern: '^_',
