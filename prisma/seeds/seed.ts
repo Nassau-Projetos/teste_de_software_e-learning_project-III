@@ -13,10 +13,11 @@ async function main() {
 		seedCourseCategory(prisma),
 		seedCourseStatus(prisma),
 		seedUser(prisma),
-		seedStudent(prisma),
-		seedInstructor(prisma),
-		seedCourse(prisma),
 	])
+
+	await Promise.all([seedStudent(prisma), seedInstructor(prisma)])
+
+	await seedCourse(prisma)
 }
 
 main().catch(async (err) => {
