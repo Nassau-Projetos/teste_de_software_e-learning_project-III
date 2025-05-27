@@ -18,12 +18,6 @@ enum UserRole {
   STUDENT
 }
 
-enum CourseStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
 enum CourseLevel {
   BEGINNER
   INTERMEDIARY
@@ -34,6 +28,7 @@ enum EnrollmentStatus {
   PENDING
   ACTIVE
   CANCELED
+  COMPLETED
 }
 
 model User {
@@ -85,24 +80,23 @@ model Student {
 }
 
 model Course {
-  id                 String       @id @default(uuid(7))
+  id                 String      @id @default(uuid(7))
   title              String
   description        String?
-  slug               String       @unique
+  slug               String      @unique
   thumbnailUrl       String
   duration           Int
   studentsCount      Int
-  priceAmount        Decimal      @db.Decimal(10, 2)
+  priceAmount        Decimal     @db.Decimal(10, 2)
   priceCurrency      String
-  discountPercentage Decimal?     @db.Decimal(5, 2)
+  discountPercentage Decimal?    @db.Decimal(5, 2)
   discountExpiresAt  DateTime?
-  status             CourseStatus
   level              CourseLevel
-  rating             Decimal      @default(0.0) @db.Decimal(3, 2)
-  ratingCount        Int          @default(0)
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @default(now()) @updatedAt
-  publishedAt        DateTime?    @db.Date()
+  rating             Decimal     @default(0.0) @db.Decimal(3, 2)
+  ratingCount        Int         @default(0)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @default(now()) @updatedAt
+  publishedAt        DateTime?   @db.Date()
 
   modules     CourseModule[]
   enrollments Enrollment[]
@@ -113,6 +107,9 @@ model Course {
 
   category         CourseCategory @relation(fields: [courseCategoryId], references: [id])
   courseCategoryId Int
+
+  status   CourseStatus @relation(fields: [statusId], references: [id])
+  statusId Int          @default(1)
 
   @@map("courses")
 }
@@ -125,20 +122,36 @@ model CourseCategory {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @default(now()) @updatedAt
   Course      Course[]
+
+  @@map("courseCategories")
+}
+
+model CourseStatus {
+  id           Int            @id @default(autoincrement())
+  name         String
+  createdAt    DateTime       @default(now())
+  CourseModule CourseModule[]
+  Course       Course[]
+
+  @@map("courseStatus")
 }
 
 model CourseModule {
-  id          String       @id @default(uuid(7))
+  id          String    @id @default(uuid(7))
   title       String
   description String?
   order       Int
-  status      CourseStatus
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime?    @default(now()) @updatedAt
-  publishedAt DateTime?    @db.Date()
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @default(now()) @updatedAt
+  publishedAt DateTime? @db.Date()
 
-  Course   Course? @relation(fields: [courseId], references: [id])
-  courseId String?
+  Course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  status   CourseStatus @relation(fields: [statusId], references: [id])
+  statusId Int          @default(1)
+
+  @@map("courseModules")
 }
 
 model CourseRating {
@@ -147,6 +160,8 @@ model CourseRating {
 
   Course   Course @relation(fields: [courseId], references: [id])
   courseId String
+
+  @@map("courseRatings")
 }
 
 model Enrollment {
