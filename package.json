@@ -16,6 +16,7 @@
 		"start:dev": "nest start --watch",
 		"start:debug": "nest start --debug --watch",
 		"start:prod": "node dist/main",
+		"db:deploy-and-seed": "npx prisma migrate deploy && npx prisma db seed",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
 		"test": "vitest run",
 		"test:watch": "vitest",
