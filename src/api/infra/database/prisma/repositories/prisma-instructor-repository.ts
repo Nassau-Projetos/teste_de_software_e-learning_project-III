@@ -1,4 +1,5 @@
 import {
+	FindManyInstructorsQuery,
 	FindUniqueInstructorQuery,
 	InstructorsRepository,
 } from '@/api/domain/e-learning/application/repositories/instructors-repository'
@@ -53,6 +54,29 @@ export class PrismaInstructorRepository implements InstructorsRepository {
 		if (!instructor) return null
 
 		return PrismaInstructorMapper.toDomain(instructor)
+	}
+
+	async findMany({ params }: FindManyInstructorsQuery): Promise<Instructor[]> {
+		const page = params?.page ?? 1
+		const take = params?.limit ?? 20
+
+		const instructors = await this.prisma.instructor.findMany({
+			orderBy: {
+				createdAt: 'desc',
+			},
+			include: {
+				user: true,
+				courses: {
+					include: {
+						category: true,
+					},
+				},
+			},
+			take,
+			skip: (page - 1) * take,
+		})
+
+		return instructors.map(PrismaInstructorMapper.toDomain)
 	}
 
 	async create(instructor: Instructor): Promise<void> {

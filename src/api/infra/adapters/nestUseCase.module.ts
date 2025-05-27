@@ -7,6 +7,7 @@ import { PublishCourseUseCase } from '@/api/domain/e-learning/application/use-ca
 
 import { FetchCourseCategoriesUseCase } from '@/api/domain/e-learning/application/use-cases/course-category/fetch-course-categories'
 import { GetCourseUseCase } from '@/api/domain/e-learning/application/use-cases/course/get-course'
+import { FetchInstructorsUseCase } from '@/api/domain/e-learning/application/use-cases/instructor/fetch-instructors'
 import { GetInstructorUseCase } from '@/api/domain/e-learning/application/use-cases/instructor/get-instructor'
 import { GetStudentUseCase } from '@/api/domain/e-learning/application/use-cases/student/get-student'
 import { RequestEnrollStudentUseCase } from '@/api/domain/e-learning/application/use-cases/student/request-enroll-student'
@@ -24,6 +25,7 @@ import { NestGetCourseUseCase } from './nest/course/nest-get-course'
 import { NestGetCourseBySlugUseCase } from './nest/course/nest-get-course-by-slug'
 import { NestCreateCourseUseCase } from './nest/instructor/nest-create-course'
 import { NestDeleteCourseUseCase } from './nest/instructor/nest-delete-course'
+import { NestFetchInstructorsUseCase } from './nest/instructor/nest-fetch-instructors'
 import { NestGetInstructorUseCase } from './nest/instructor/nest-get-instructor'
 import { NestPublishCourseUseCase } from './nest/instructor/nest-publish-course'
 import { NestGetStudentUseCase } from './nest/student/nest-get-student'
@@ -56,6 +58,10 @@ import { NestRegisterStudentUseCase } from './nest/user/register/nest-register-s
 		{
 			provide: GetInstructorUseCase,
 			useClass: NestGetInstructorUseCase,
+		},
+		{
+			provide: FetchInstructorsUseCase,
+			useClass: NestFetchInstructorsUseCase,
 		},
 		{
 			provide: CreateCourseUseCase,
@@ -101,6 +107,7 @@ import { NestRegisterStudentUseCase } from './nest/user/register/nest-register-s
 		RegisterInstructorUseCase,
 		AuthenticateInstructorUseCase,
 		GetInstructorUseCase,
+		FetchInstructorsUseCase,
 		CreateCourseUseCase,
 		PublishCourseUseCase,
 		FetchCoursesByCategoryUseCase,

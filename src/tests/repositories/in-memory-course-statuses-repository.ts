@@ -1,6 +1,6 @@
 import {
-  CourseStatusesRepository,
-  FindUniqueStatusQuery,
+	CourseStatusesRepository,
+	FindUniqueStatusQuery,
 } from '@/api/domain/e-learning/application/repositories/course-status-repository'
 import { Status } from '@/api/domain/e-learning/enterprise/entities/status'
 

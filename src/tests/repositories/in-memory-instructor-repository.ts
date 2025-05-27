@@ -1,5 +1,6 @@
 import { DomainEvents } from '@/api/core/events/domain-events'
 import {
+	FindManyInstructorsQuery,
 	FindUniqueInstructorQuery,
 	InstructorsRepository,
 } from '@/api/domain/e-learning/application/repositories/instructors-repository'
@@ -34,6 +35,17 @@ export class InMemoryInstructorsRepository implements InstructorsRepository {
 		}
 
 		return instructor
+	}
+
+	async findMany({ params }: FindManyInstructorsQuery): Promise<Instructor[]> {
+		const page = params?.page ?? 1
+		const limit = params?.limit ?? 20
+
+		const sorted = this.items.sort(
+			(a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+		)
+
+		return sorted.slice((page - 1) * limit, page * limit)
 	}
 
 	async create(instructor: Instructor): Promise<void> {

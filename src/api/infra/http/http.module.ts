@@ -9,6 +9,7 @@ import { GetCourseBySlugController } from './controllers/course/get-course-by-sl
 import { GetCourseController } from './controllers/course/get-course/get-couser.controller'
 import { CreateCourseController } from './controllers/instructor/create-course/create-course.controller'
 import { DeleteCourseController } from './controllers/instructor/delete-course/delete-course.controller'
+import { FetchInstructorController } from './controllers/instructor/fetch-instructors/fetch-instructors.controller'
 import { GetInstructorController } from './controllers/instructor/get-instructor/get-instructor.controller'
 import { GetInstructorProfileController } from './controllers/instructor/get-profile/get-instructor-profile.controller'
 import { PublishCourseController } from './controllers/instructor/publish-course/publish-course.controller'
@@ -31,6 +32,7 @@ import { CreateAccountStudentController } from './controllers/user/register/regi
 		AuthenticateInstructorController,
 		GetInstructorController,
 		GetInstructorProfileController,
+		FetchInstructorController,
 		CreateCourseController,
 		PublishCourseController,
 		FetchCourseController,

@@ -1,6 +1,6 @@
 import {
-  EnrollmentsRepository,
-  FindUniqueEnrollmentQuery,
+	EnrollmentsRepository,
+	FindUniqueEnrollmentQuery,
 } from '@/api/domain/e-learning/application/repositories/enrollment-repository'
 import { Enrollment } from '@/api/domain/e-learning/enterprise/entities/enrollment'
 

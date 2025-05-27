@@ -2,7 +2,6 @@ import { Either, left, right } from '@/api/core/either/either'
 import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
 import { CourseCategory } from '../../../enterprise/entities/course-category'
 import { CourseCategorysRepository } from '../../repositories/course-catogories-repository'
-import { InvalidCategoryError } from '../errors/course-category/invalid-category-error'
 
 interface FetchCourseCategoriesUseCaseRequest {
 	page: number
@@ -10,7 +9,7 @@ interface FetchCourseCategoriesUseCaseRequest {
 }
 
 type FetchCourseCategoriesUseCaseResponse = Either<
-	ResourceNotFoundError | InvalidCategoryError,
+	ResourceNotFoundError,
 	{
 		courseCategories: CourseCategory[]
 	}
