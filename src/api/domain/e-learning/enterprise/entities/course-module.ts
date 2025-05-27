@@ -1,9 +1,11 @@
 import { AggregateRoot } from '@/api/core/entities/aggregate-root'
+import { IncrementalEntityId } from '@/api/core/entities/value-objects/incremental-entity-id'
 import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-id'
+import { STATUS } from '@/api/core/enums/status'
 import { Optional } from '@/api/core/types/optional'
 import { Lesson } from './lesson'
 import { Quiz } from './quiz'
-import { Status } from './value-objects/status'
+import { Status } from './status'
 
 interface CourseModuleProps {
 	title: string
@@ -128,29 +130,38 @@ export class CourseModule extends AggregateRoot<CourseModuleProps> {
 
 	publish() {
 		if (this.props.status.isPublished()) {
-			throw new Error('Módulo já está publicado')
+			throw new Error('Curso já está publicado')
 		}
-		this.props.status = Status.PUBLISHED
+		this.props.status = Status.create(
+			{},
+			new IncrementalEntityId(STATUS.PUBLISHED),
+		)
 		this.props.publishedAt = new Date()
+		this.touch()
+	}
+
+	archive() {
+		if (this.props.status.isArchived()) {
+			throw new Error('Curso já está arquivado')
+		}
+		this.props.status = Status.create(
+			{},
+			new IncrementalEntityId(STATUS.ARCHIVED),
+		)
 		this.touch()
 	}
 
 	unpublish() {
 		if (this.props.status.isPublished()) {
-			this.props.status = Status.DRAFT
+			this.props.status = Status.create(
+				{},
+				new IncrementalEntityId(STATUS.DRAFT),
+			)
 			this.props.publishedAt = null
 			this.touch()
 		} else {
 			throw new Error('Módulo não está publicado, não pode ser despublicado')
 		}
-	}
-
-	archive() {
-		if (this.props.status.isArchived()) {
-			throw new Error('Módulo já está arquivado')
-		}
-		this.props.status = Status.ARCHIVED
-		this.touch()
 	}
 
 	updateDetails(details: {
@@ -202,7 +213,9 @@ export class CourseModule extends AggregateRoot<CourseModuleProps> {
 				...props,
 				lessons: props.lessons ?? [],
 				quiz: props.quiz ?? null,
-				status: props.status ?? Status.DRAFT,
+				status:
+					props.status ??
+					Status.create({}, new IncrementalEntityId(STATUS.DRAFT)),
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

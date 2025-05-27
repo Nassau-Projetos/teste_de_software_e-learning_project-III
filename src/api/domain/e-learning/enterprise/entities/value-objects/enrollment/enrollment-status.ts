@@ -1,14 +1,26 @@
-import { ENROLLMENT_STATUS } from '@/api/core/enums/enrollment-status'
+import {
+	ENROLLMENT_INFO,
+	ENROLLMENT_STATUS,
+} from '@/api/core/enums/enrollment-status'
+import { getEnrollmentByValue } from '@/api/core/utils/get-enrollment-by-value'
 
 export class EnrollmentStatus {
 	private constructor(private readonly _value: number) {
 		if (_value < 0) {
-			throw new Error('O status de enrollment não pode ser negativo')
+			throw new Error('Enrollment status cannot be negative')
 		}
 	}
 
 	get value(): number {
 		return this._value
+	}
+
+	get key(): string {
+		return ENROLLMENT_INFO[this._value]?.key ?? 'UNKNOWN'
+	}
+
+	get label(): string {
+		return ENROLLMENT_INFO[this._value]?.label ?? 'Unknown Status'
 	}
 
 	toString(): string {
@@ -33,6 +45,22 @@ export class EnrollmentStatus {
 
 	IsCompleted() {
 		return this.equals(EnrollmentStatus.COMPLETED)
+	}
+
+	static fromValue(
+		value: ENROLLMENT_STATUS | number | string,
+	): EnrollmentStatus {
+		if (typeof value === 'string') {
+			const byKey = getEnrollmentByValue(value)
+			if (byKey) return new EnrollmentStatus(byKey)
+
+			const parsedNumber = Number(value)
+			if (!isNaN(parsedNumber)) return new EnrollmentStatus(parsedNumber)
+		}
+
+		if (typeof value === 'number') return new EnrollmentStatus(value)
+
+		throw new Error(`Invalid Enrollment Status: ${value}`)
 	}
 
 	static PENDING = new EnrollmentStatus(ENROLLMENT_STATUS.PENDING)

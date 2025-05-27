@@ -1,8 +1,10 @@
+import { IncrementalEntityId } from '@/api/core/entities/value-objects/incremental-entity-id'
+import { STATUS } from '@/api/core/enums/status'
 import { Optional } from '@/api/core/types/optional'
 import { Entity } from 'src/api/core/entities/entity'
 import { UniqueEntityId } from 'src/api/core/entities/value-objects/unique-entity-id'
+import { Status } from './status'
 import { LessonContent } from './value-objects/lesson/lesson-content'
-import { Status } from './value-objects/status'
 
 interface LessonProps {
 	title: string
@@ -68,18 +70,24 @@ export class Lesson extends Entity<LessonProps> {
 
 	publish() {
 		if (this.props.status.isPublished()) {
-			throw new Error('A aula já está publicada')
+			throw new Error('Curso já está publicado')
 		}
-		this.props.status = Status.PUBLISHED
+		this.props.status = Status.create(
+			{},
+			new IncrementalEntityId(STATUS.PUBLISHED),
+		)
 		this.props.publishedAt = new Date()
 		this.touch()
 	}
 
 	archive() {
 		if (this.props.status.isArchived()) {
-			throw new Error('A aula já está arquivada')
+			throw new Error('Curso já está arquivado')
 		}
-		this.props.status = Status.ARCHIVED
+		this.props.status = Status.create(
+			{},
+			new IncrementalEntityId(STATUS.ARCHIVED),
+		)
 		this.touch()
 	}
 

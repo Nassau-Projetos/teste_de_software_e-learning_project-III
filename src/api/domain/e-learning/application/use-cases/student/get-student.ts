@@ -4,7 +4,7 @@ import { Student } from '../../../enterprise/entities/student'
 import { StudentsRepository } from '../../repositories/students-repository'
 
 interface GetStudentUseCaseRequest {
-	email?: string
+	studentId: string
 }
 
 type GetStudentUseCaseResponse = Either<
@@ -18,10 +18,10 @@ export class GetStudentUseCase {
 	constructor(private studentRepository: StudentsRepository) {}
 
 	async execute({
-		email,
+		studentId,
 	}: GetStudentUseCaseRequest): Promise<GetStudentUseCaseResponse> {
 		const student = await this.studentRepository.findUnique({
-			email,
+			studentId,
 		})
 
 		if (!student) {

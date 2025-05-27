@@ -7,7 +7,7 @@ import { Payment } from './payment'
 import { EnrollmentStatus } from './value-objects/enrollment/enrollment-status'
 import { PaymentStatus } from './value-objects/payment/payment-status'
 
-interface EnrollmentProps {
+export interface EnrollmentProps {
 	studentId: UniqueEntityId
 	courseId: UniqueEntityId
 	paymentId?: UniqueEntityId | null

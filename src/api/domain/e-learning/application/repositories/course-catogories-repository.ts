@@ -14,9 +14,3 @@ export abstract class FindUniqueCourseCategoryQuery {
 	abstract categoryId?: number
 	abstract name?: string
 }
-
-export abstract class UpdateCourseCategoryOptions {
-	abstract name?: string
-	abstract icon?: string
-	abstract courseCount?: number
-}

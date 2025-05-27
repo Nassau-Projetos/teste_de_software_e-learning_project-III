@@ -2,6 +2,7 @@ import { IncrementalEntityId } from '@/api/core/entities/value-objects/increment
 import { UniqueEntityId } from '@/api/core/entities/value-objects/unique-entity-id'
 import { Course } from '@/api/domain/e-learning/enterprise/entities/course'
 import { CourseCategory } from '@/api/domain/e-learning/enterprise/entities/course-category'
+import { Status } from '@/api/domain/e-learning/enterprise/entities/status'
 import { CourseLevel } from '@/api/domain/e-learning/enterprise/entities/value-objects/course/level'
 import { Rating } from '@/api/domain/e-learning/enterprise/entities/value-objects/course/rating'
 import { Discount } from '@/api/domain/e-learning/enterprise/entities/value-objects/price/discount'
@@ -17,6 +18,7 @@ import {
 
 type PrismaCourseWithCategory = PrismaCourse & {
 	category: PrismaCourseCategory
+	status: PrismaCourseStatus
 }
 
 export class PrismaCourseMapper {
@@ -49,6 +51,12 @@ export class PrismaCourseMapper {
 					},
 					new IncrementalEntityId(persistenceCourse.category.id),
 				),
+				status: Status.create(
+					{
+						createdAt: persistenceCourse.category.createdAt,
+					},
+					new IncrementalEntityId(persistenceCourse.status.id),
+				),
 				slug: Slug.create(persistenceCourse.slug),
 				studentsCount: persistenceCourse.studentsCount,
 				createdAt: persistenceCourse.createdAt,
@@ -59,17 +67,11 @@ export class PrismaCourseMapper {
 		)
 	}
 
-	static toPrisma(domainCourse: Course): Prisma.CourseCreateInput {
+	static toPrismaCreate(domainCourse: Course): Prisma.CourseCreateInput {
 		const levelMap: Record<number, PrismaCourseLevel> = {
 			1: PrismaCourseLevel.BEGINNER,
-			2: PrismaCourseLevel.INTERMEDIATE,
+			2: PrismaCourseLevel.INTERMEDIARY,
 			3: PrismaCourseLevel.ADVANCED,
-		}
-
-		const statusMap: Record<number, PrismaCourseStatus> = {
-			1: PrismaCourseStatus.DRAFT,
-			2: PrismaCourseStatus.PUBLISHED,
-			3: PrismaCourseStatus.ARCHIVED,
 		}
 
 		return {
@@ -80,7 +82,6 @@ export class PrismaCourseMapper {
 			thumbnailUrl: domainCourse.thumbnailUrl,
 			slug: domainCourse.slug.value,
 			level: levelMap[domainCourse.level.value],
-			status: statusMap[domainCourse.status.value],
 			priceAmount: domainCourse.price.value,
 			priceCurrency: 'BRL',
 
@@ -101,6 +102,52 @@ export class PrismaCourseMapper {
 
 			category: {
 				connect: { id: domainCourse.category.id.toNumber() },
+			},
+
+			status: {
+				connect: { id: domainCourse.status.id.toNumber() },
+			},
+		}
+	}
+
+	static toPrismaUpdate(domainCourse: Course): Prisma.CourseUpdateInput {
+		const levelMap: Record<string, PrismaCourseLevel> = {
+			1: PrismaCourseLevel.BEGINNER,
+			2: PrismaCourseLevel.INTERMEDIARY,
+			3: PrismaCourseLevel.ADVANCED,
+		}
+
+		return {
+			title: domainCourse.title,
+			duration: domainCourse.duration,
+			description: domainCourse.description,
+			thumbnailUrl: domainCourse.thumbnailUrl,
+			slug: domainCourse.slug.value,
+			level: levelMap[domainCourse.level.value],
+			priceAmount: domainCourse.price.value,
+			priceCurrency: 'BRL',
+
+			discountPercentage: domainCourse.discount?.percentage ?? null,
+			discountExpiresAt: domainCourse.discount?.expiresAt ?? null,
+
+			studentsCount: domainCourse.studentsCount,
+			rating: domainCourse.rating.average,
+			ratingCount: domainCourse.rating.count,
+
+			createdAt: domainCourse.createdAt,
+			updatedAt: domainCourse.updatedAt ?? undefined,
+			publishedAt: domainCourse.publishedAt,
+
+			instructor: {
+				connect: { id: domainCourse.instructorId.toString() },
+			},
+
+			category: {
+				connect: { id: domainCourse.category.id.toNumber() },
+			},
+
+			status: {
+				connect: { id: domainCourse.status.id.toNumber() },
 			},
 		}
 	}

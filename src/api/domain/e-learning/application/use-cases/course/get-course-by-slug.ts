@@ -20,7 +20,7 @@ export class GetCourseBySlugUseCase {
 	async execute({
 		slug,
 	}: GetCourseBySlugUseCaseRequest): Promise<GetCourseBySlugUseCaseResponse> {
-		const course = await this.courseRepository.findUnique({ slug })
+		const course = await this.courseRepository.findBySlug({ slug })
 
 		if (!course) {
 			return left(new ResourceNotFoundError())

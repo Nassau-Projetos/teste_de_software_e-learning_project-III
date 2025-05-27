@@ -3,9 +3,11 @@ import {
 	FindUniqueEnrollmentQuery,
 } from '@/api/domain/e-learning/application/repositories/enrollment-repository'
 import { Enrollment } from '@/api/domain/e-learning/enterprise/entities/enrollment'
+import { Injectable } from '@nestjs/common'
 import { PrismaEnrollmentMapper } from '../mappers/prisma-enrollment-mapper'
 import { PrismaService } from '../prisma.service'
 
+@Injectable()
 export class PrismaEnrollmentRepository implements EnrollmentsRepository {
 	constructor(private prisma: PrismaService) {}
 

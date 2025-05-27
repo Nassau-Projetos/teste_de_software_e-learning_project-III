@@ -1,17 +1,11 @@
-import { getCategoryIdByKey } from '@/api/core/utils/get-category-by-id'
-import { FetchCoursesByCategoryUseCase } from '@/api/domain/e-learning/application/use-cases/course/fetch-courses-by-category'
-import { InvalidCategoryError } from '@/api/domain/e-learning/application/use-cases/errors/course-category/invalid-category-error'
-import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
+import { getStatusIdByKey } from '@/api/core/utils/get-status-by-id'
+import { FetchCoursesUseCase } from '@/api/domain/e-learning/application/use-cases/course/fetch-course'
+import { Controller, Get, HttpCode, Query } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../../../pipes/zod-validation-pipe'
+import { CoursePresenter } from '../../../presenters/course/course-presenter'
 
 const pageQueryParamSchema = z.object({
-	categoryName: z
-		.string()
-		.refine((val) => !!getCategoryIdByKey(val), {
-			message: 'Categoria inválida',
-		})
-		.transform((val) => getCategoryIdByKey(val)!),
 	page: z
 		.string()
 		.optional()
@@ -31,33 +25,28 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
 
 @Controller('/courses')
-export class FetchCourseByCategoryController {
-	constructor(
-		private fetchCourseByCategoryUseCase: FetchCoursesByCategoryUseCase,
-	) {}
+export class FetchCourseController {
+	constructor(private fetchCourseUseCase: FetchCoursesUseCase) {}
 
 	@Get()
+	@HttpCode(200)
 	async handle(@Query(queryValidationPipe) query: PageQueryParamSchema) {
-		const { categoryName, limit, page } = query
+		const { limit, page } = query
 
-		const result = await this.fetchCourseByCategoryUseCase.execute({
-			categoryId: categoryName,
+		const publishedStatusId = getStatusIdByKey('PUBLISHED')
+
+		const result = await this.fetchCourseUseCase.execute({
+			statusId: publishedStatusId!,
 			limit,
 			page,
 		})
 
 		if (result.isLeft()) {
-			const error = result.value
-
-			if (error instanceof InvalidCategoryError) {
-				throw new BadRequestException(error.message)
-			}
-
 			throw new Error('Unexpected error')
 		}
 
 		const courses = result.value.courses
 
-		return { courses }
+		return { courses: courses.map(CoursePresenter.toHttp) }
 	}
 }

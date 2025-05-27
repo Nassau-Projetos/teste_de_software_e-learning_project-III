@@ -16,7 +16,14 @@ export class PrismaInstructorRepository implements InstructorsRepository {
 	}: FindUniqueInstructorQuery): Promise<Instructor | null> {
 		const instructor = await this.prisma.instructor.findUnique({
 			where: { id: instructorId },
-			include: { user: true },
+			include: {
+				user: true,
+				courses: {
+					include: {
+						category: true,
+					},
+				},
+			},
 		})
 
 		if (!instructor) return null
@@ -35,6 +42,11 @@ export class PrismaInstructorRepository implements InstructorsRepository {
 			},
 			include: {
 				user: true,
+				courses: {
+					include: {
+						category: true,
+					},
+				},
 			},
 		})
 

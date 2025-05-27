@@ -1,17 +1,27 @@
 @baseUrl = http://localhost:3333
-@authToken = {{authenticate.response.body.access_token}}
+@student_email = {{create_account_students.request.body.email}}
+@instructor_email = {{create_account_instructor.request.body.email}}
+@authToken = {{authenticate.response.body.token}}
+@courseId = {{create_course.response.body.id}}
+@categoryName = {{create_course.response.body.category}}
 
 # @name create_account_students
 POST {{baseUrl}}/accounts/students
 Content-Type: application/json
 
 {
-    "name": "Dorival Rodrigues",
-    "email": "teste@student.com.br",
+    "name": "Lucas Rodrigues",
+    "email": "lucas@student.com.br",
     "password": "123456",
-    "cpf": "11111111113",
-    "phoneNumber": "123"
+    "cpf": "11111411113",
+    "phoneNumber": "1223"
 }
+
+###
+
+# @name get_student
+GET {{baseUrl}}/students/8706ab94-f83c-48c5-9c84-ea72b4f9a60e
+Content-Type: application/json
 
 ###
 
@@ -20,13 +30,19 @@ POST {{baseUrl}}/accounts/instructors
 Content-Type: application/json
 
 {
-    "name": "Dorival Professor",
-    "bio": "Tenho diploma",
-    "email": "teste@instructor.com.br",
+    "name": "Claudio Silva",
+    "bio": "Graduado em Ciencia da Computacao",
+    "email": "Claudio@instructor.com.br",
     "passwordHash": "123456",
-    "cpf": "11111451112",
-    "phoneNumber": "123"
+    "cpf": "11141451112",
+    "phoneNumber": "12743"
 }
+
+###
+
+# @name get_instructor
+GET {{baseUrl}}/instructors/e8b8baa1-f3e8-4705-b9c7-8a8ac4bc3eee
+Content-Type: application/json
 
 ###
 
@@ -35,9 +51,16 @@ POST {{baseUrl}}/sessions/students
 Content-Type: application/json
 
 {
-    "email": "teste@student.com.br",
+    "email": "{{student_email}}",
     "password": "123456"
 }
+
+###
+
+# @name get_student_profile
+GET {{baseUrl}}/students/8706ab94-f83c-48c5-9c84-ea72b4f9a60e/profile
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 ###
 
@@ -46,19 +69,26 @@ POST {{baseUrl}}/sessions/instructors
 Content-Type: application/json
 
 {
-    "email": "teste@instructor.com.br",
+    "email": "{{instructor_email}}",
     "password": "123456"
 }
 
 ###
 
+# @name get_instructor_profile
+GET {{baseUrl}}/instructors/e8b8baa1-f3e8-4705-b9c7-8a8ac4bc3eee/profile
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
 # @name create_course
-POST {{baseUrl}}/courses
+POST {{baseUrl}}/instructors/course
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "title": "Curso Design",
+    "title": "Curso Design 88",
     "description": "Apenas um teste",
     "thumbnailUrl": "Apenas um teste",
     "price": 15,
@@ -69,7 +99,47 @@ Authorization: Bearer {{authToken}}
 
 ###
 
-# @name fetch_courses_by_category
-GET {{baseUrl}}/courses?categoryName=ti&page=1&limit=20
+# @name publish_course
+PATCH {{baseUrl}}/instructors/course/publish/{{courseId}}
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+###
+
+# @name fetch_courses
+GET {{baseUrl}}/courses
+Content-Type: application/json
+
+###
+
+# @name fetch_courses_by_category
+GET {{baseUrl}}/courses/category?categoryName={{categoryName}}&page=1&limit=20
+Content-Type: application/json
+
+###
+
+# @name get_course_by_slug
+GET {{baseUrl}}/courses/slug/curso-design-888
+Content-Type: application/json
+
+###
+
+# @name get_course
+GET {{baseUrl}}/courses/{{courseId}}
+Content-Type: application/json
+
+###
+
+# @name delete_course
+DELETE {{baseUrl}}/instructors/course/{{courseId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name request_enroll_student
+POST {{baseUrl}}/students/course/{{courseId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###

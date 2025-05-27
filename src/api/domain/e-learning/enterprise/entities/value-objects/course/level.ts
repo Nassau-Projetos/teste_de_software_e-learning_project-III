@@ -1,9 +1,10 @@
-import { LEVEL } from '@/api/core/enums/level'
+import { LEVEL, LEVEL_INFO } from '@/api/core/enums/level'
+import { getLevelByValue } from '@/api/core/utils/get-level-by-value'
 
 export class CourseLevel {
 	private constructor(private readonly _value: number) {
 		if (_value < 0) {
-			throw new Error('Level não pode ser negativo')
+			throw new Error('Level cannot be negative')
 		}
 	}
 
@@ -11,8 +12,16 @@ export class CourseLevel {
 		return this._value
 	}
 
+	get key(): string {
+		return LEVEL_INFO[this._value]?.key ?? 'UNKNOWN'
+	}
+
+	get label(): string {
+		return LEVEL_INFO[this._value]?.label ?? 'Unknown Level'
+	}
+
 	toString(): string {
-		return this._value.toString()
+		return this.label
 	}
 
 	equals(other: CourseLevel): boolean {
@@ -32,25 +41,17 @@ export class CourseLevel {
 	}
 
 	static fromValue(value: LEVEL | number | string): CourseLevel {
-		switch (value) {
-			case LEVEL.BEGINNER:
-			case 'BEGINNER':
-			case 1:
-				return CourseLevel.BEGINNER
+		if (typeof value === 'string') {
+			const byKey = getLevelByValue(value)
+			if (byKey) return new CourseLevel(byKey)
 
-			case LEVEL.INTERMEDIARY:
-			case 'INTERMEDIARY':
-			case 2:
-				return CourseLevel.INTERMEDIARY
-
-			case LEVEL.ADVANCED:
-			case 'ADVANCED':
-			case 3:
-				return CourseLevel.ADVANCED
-
-			default:
-				throw new Error(`Nível de curso inválido: ${value}`)
+			const parsedNumber = Number(value)
+			if (!isNaN(parsedNumber)) return new CourseLevel(parsedNumber)
 		}
+
+		if (typeof value === 'number') return new CourseLevel(value)
+
+		throw new Error(`Invalid Course Level: ${value}`)
 	}
 
 	static BEGINNER = new CourseLevel(LEVEL.BEGINNER)

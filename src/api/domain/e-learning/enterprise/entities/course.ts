@@ -1,17 +1,19 @@
 import { AggregateRoot } from '@/api/core/entities/aggregate-root'
-import { UniqueEntityId } from '../../../../../api/core/entities/value-objects/unique-entity-id'
+import { IncrementalEntityId } from '@/api/core/entities/value-objects/incremental-entity-id'
+import { STATUS } from '@/api/core/enums/status'
+import { UniqueEntityId } from 'src/api/core/entities/value-objects/unique-entity-id'
 import { Optional } from 'src/api/core/types/optional'
 import { CourseCategory } from './course-category'
 import { CourseModule } from './course-module'
 import { CourseRating } from './course-rating'
+import { Status } from './status'
 import { CourseLevel } from './value-objects/course/level'
 import { Rating } from './value-objects/course/rating'
 import { Discount } from './value-objects/price/discount'
 import { Price } from './value-objects/price/price'
 import { Slug } from './value-objects/slug/slug'
-import { Status } from './value-objects/status'
 
-interface CourseProps {
+export interface CourseProps {
 	title: string
 	description?: string | null
 	slug: Slug
@@ -158,7 +160,10 @@ export class Course extends AggregateRoot<CourseProps> {
 		if (this.props.status.isPublished()) {
 			throw new Error('Curso já está publicado')
 		}
-		this.props.status = Status.PUBLISHED
+		this.props.status = Status.create(
+			{},
+			new IncrementalEntityId(STATUS.PUBLISHED),
+		)
 		this.props.publishedAt = new Date()
 		this.touch()
 	}
@@ -167,7 +172,10 @@ export class Course extends AggregateRoot<CourseProps> {
 		if (this.props.status.isArchived()) {
 			throw new Error('Curso já está arquivado')
 		}
-		this.props.status = Status.ARCHIVED
+		this.props.status = Status.create(
+			{},
+			new IncrementalEntityId(STATUS.ARCHIVED),
+		)
 		this.touch()
 	}
 
@@ -325,7 +333,9 @@ export class Course extends AggregateRoot<CourseProps> {
 			{
 				...props,
 				slug: props.slug ?? Slug.createFromText(props.title),
-				status: props.status ?? Status.DRAFT,
+				status:
+					props.status ??
+					Status.create({}, new IncrementalEntityId(STATUS.DRAFT)),
 				rating: new Rating(0, 0),
 				ratingCount: 0,
 				studentsCount: 0,

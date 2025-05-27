@@ -53,9 +53,9 @@ export class Instructor extends User<InstructorProps> {
 		this.touch()
 	}
 
-	removeCourse(courseId: UniqueEntityId) {
+	removeCourse(course: Course) {
 		const initialLength = this.courses.length
-		this.props.courses = this.courses.filter((c) => !c.id.equals(courseId))
+		this.props.courses = this.courses.filter((c) => !c.id.equals(course.id))
 
 		if (this.courses.length === initialLength) {
 			throw new Error('Curso não encontrado para este instrutor')
