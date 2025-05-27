@@ -2,6 +2,7 @@ import { RegisterStudentUseCase } from '@/api/domain/e-learning/application/use-
 import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../../../pipes/zod-validation-pipe'
+import { RegisterStudentPresenter } from '../../../presenters/user/register/register-student-presenter'
 
 const createAccountStudentBodySchema = z.object({
 	name: z.string(),
@@ -36,5 +37,7 @@ export class CreateAccountStudentController {
 		if (result.isLeft()) {
 			throw new Error()
 		}
+
+		return RegisterStudentPresenter.toHttp(result.value.student)
 	}
 }

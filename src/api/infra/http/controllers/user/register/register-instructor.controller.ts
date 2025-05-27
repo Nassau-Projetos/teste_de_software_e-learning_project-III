@@ -2,6 +2,7 @@ import { RegisterInstructorUseCase } from '@/api/domain/e-learning/application/u
 import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../../../pipes/zod-validation-pipe'
+import { RegisterInstructorPresenter } from '../../../presenters/user/register/register-instructor-presenter'
 
 const createAccountInstructorBodySchema = z.object({
 	name: z.string(),
@@ -38,5 +39,7 @@ export class CreateAccountInstructorController {
 		if (result.isLeft()) {
 			throw new Error()
 		}
+
+		return RegisterInstructorPresenter.toHttp(result.value.instructor)
 	}
 }
