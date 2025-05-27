@@ -58,7 +58,13 @@ export class UpdateCourseUseCase {
 		}
 
 		if (level !== undefined) {
-			course.changeLevel(CourseLevel.fromValue(level))
+			let normalizedLevel: string | number = level
+
+			if (typeof level === 'string' && /^\d+$/.test(level)) {
+				normalizedLevel = parseInt(level, 10)
+			}
+
+			course.changeLevel(CourseLevel.fromValue(normalizedLevel))
 		}
 
 		await this.courseRepository.save(course)

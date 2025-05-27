@@ -11,7 +11,7 @@ type DeleteInstructorUseCaseResponse = Either<ResourceNotFoundError, null>
 export class DeleteInstructorUseCase {
 	constructor(private instructorRepository: InstructorsRepository) {}
 
-	async execeute({
+	async execute({
 		instructorId,
 	}: DeleteInstructorUseCaseRequest): Promise<DeleteInstructorUseCaseResponse> {
 		const instructor = await this.instructorRepository.findUnique({

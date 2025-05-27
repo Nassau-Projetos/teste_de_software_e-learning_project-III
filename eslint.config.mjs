@@ -9,7 +9,13 @@ export default tseslint.config(
 
 	{
 		files: ['**/*.ts'],
-		ignores: ['vite.config.ts', '.eslintrc.js', 'build', 'dist', 'node_modules'],
+		ignores: [
+			'vite.config.ts',
+			'.eslintrc.js',
+			'build',
+			'dist',
+			'node_modules',
+		],
 		plugins: {
 			prettier,
 		},
@@ -20,18 +26,29 @@ export default tseslint.config(
 		},
 		rules: {
 			// Apenas ativa o plugin do prettier sem sobrescrever com configs manuais
-			'prettier/prettier': 'error',
+			// para não conflitar com as regras do eslint
+			'prettier/prettier': [
+				[
+					'error',
+					{
+						endOfLine: 'auto',
+					},
+				],
+			],
 
 			// Melhoria para variáveis não utilizadas com prefixo _
-			'@typescript-eslint/no-unused-vars': ['error', {
-				args: 'all',
-				argsIgnorePattern: '^_',
-				caughtErrors: 'all',
-				caughtErrorsIgnorePattern: '^_',
-				destructuredArrayIgnorePattern: '^_',
-				varsIgnorePattern: '^_',
-				ignoreRestSiblings: true,
-			}],
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					args: 'all',
+					argsIgnorePattern: '^_',
+					caughtErrors: 'all',
+					caughtErrorsIgnorePattern: '^_',
+					destructuredArrayIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					ignoreRestSiblings: true,
+				},
+			],
 		},
-	}
+	},
 )
