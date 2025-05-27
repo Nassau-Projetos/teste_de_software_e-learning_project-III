@@ -1,16 +1,16 @@
 import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
-import { FetchCourseCategoriesUseCase } from '@/api/domain/e-learning/application/use-cases/course-category/fetch-course-categories'
+import { FetchInstructorsUseCase } from '@/api/domain/e-learning/application/use-cases/instructor/fetch-instructors'
 import {
+	BadRequestException,
 	Controller,
 	Get,
 	HttpCode,
 	HttpStatus,
-	NotFoundException,
 	Query,
 } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../../../pipes/zod-validation-pipe'
-import { CourseCategoryPresenter } from '../../../presenters/course-category/course-category-presenter'
+import { InstructorPresenter } from '../../../presenters/instructor/instructor-presenter'
 
 const pageQueryParamSchema = z.object({
 	page: z
@@ -31,18 +31,16 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 
 const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
 
-@Controller('/categories')
-export class FetchCourseCategoriesController {
-	constructor(
-		private fetchCourseCategoriesUseCase: FetchCourseCategoriesUseCase,
-	) {}
+@Controller('/instructors')
+export class FetchInstructorController {
+	constructor(private fetchInstructorUseCase: FetchInstructorsUseCase) {}
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
 	async handle(@Query(queryValidationPipe) query: PageQueryParamSchema) {
 		const { limit, page } = query
 
-		const result = await this.fetchCourseCategoriesUseCase.execute({
+		const result = await this.fetchInstructorUseCase.execute({
 			limit,
 			page,
 		})
@@ -51,16 +49,14 @@ export class FetchCourseCategoriesController {
 			const error = result.value
 
 			if (error instanceof ResourceNotFoundError) {
-				throw new NotFoundException('Category not found')
+				throw new BadRequestException(error.message)
 			}
 
-			throw new Error('Unhandled error')
+			throw new Error('Unexpected error')
 		}
 
-		const courseCategories = result.value.courseCategories
+		const instructors = result.value.instructors
 
-		return {
-			courseCategories: courseCategories.map(CourseCategoryPresenter.toHttp),
-		}
+		return { instructors: instructors.map(InstructorPresenter.toHttp) }
 	}
 }

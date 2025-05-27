@@ -1,6 +1,13 @@
+import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
 import { getStatusIdByKey } from '@/api/core/utils/get-status-by-id'
 import { FetchCoursesUseCase } from '@/api/domain/e-learning/application/use-cases/course/fetch-course'
-import { Controller, Get, HttpCode, Query } from '@nestjs/common'
+import {
+	BadRequestException,
+	Controller,
+	Get,
+	HttpCode,
+	Query,
+} from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../../../pipes/zod-validation-pipe'
 import { CoursePresenter } from '../../../presenters/course/course-presenter'
@@ -42,6 +49,12 @@ export class FetchCourseController {
 		})
 
 		if (result.isLeft()) {
+			const error = result.value
+
+			if (error instanceof ResourceNotFoundError) {
+				throw new BadRequestException(error.message)
+			}
+
 			throw new Error('Unexpected error')
 		}
 

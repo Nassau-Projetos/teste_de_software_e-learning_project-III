@@ -1,12 +1,16 @@
+import { NotAllowedError } from '@/api/core/errors/errors/not-allowed-error'
+import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
 import { DeleteCourseUseCase } from '@/api/domain/e-learning/application/use-cases/instructor/delete-course'
 import { CurrentUser } from '@/api/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/api/infra/auth/jwt-auth.guard'
 import { UserPayload } from '@/api/infra/auth/jwt.strategy'
 import {
+	BadRequestException,
 	Controller,
 	Delete,
 	HttpCode,
 	HttpStatus,
+	NotFoundException,
 	Param,
 	UseGuards,
 } from '@nestjs/common'
@@ -34,7 +38,17 @@ export class DeleteCourseController {
 		})
 
 		if (result.isLeft()) {
-			throw new Error()
+			const error = result.value
+
+			if (error instanceof ResourceNotFoundError) {
+				throw new NotFoundException(error.message)
+			}
+
+			if (error instanceof NotAllowedError) {
+				throw new BadRequestException(error.message)
+			}
+
+			throw new BadRequestException('Erro inesperado ao realizar matrícula')
 		}
 	}
 }

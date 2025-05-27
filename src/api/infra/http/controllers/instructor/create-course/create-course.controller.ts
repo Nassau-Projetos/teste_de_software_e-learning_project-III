@@ -1,3 +1,4 @@
+import { ResourceNotFoundError } from '@/api/core/errors/errors/resource-not-found-error'
 import { CreateCourseUseCase } from '@/api/domain/e-learning/application/use-cases/instructor/create-course'
 import { CurrentUser } from '@/api/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/api/infra/auth/jwt-auth.guard'
@@ -7,6 +8,7 @@ import {
 	Controller,
 	HttpCode,
 	HttpStatus,
+	NotFoundException,
 	Post,
 	UseGuards,
 } from '@nestjs/common'
@@ -63,7 +65,13 @@ export class CreateCourseController {
 		})
 
 		if (result.isLeft()) {
-			throw new Error()
+			const error = result.value
+
+			if (error instanceof ResourceNotFoundError) {
+				throw new NotFoundException('Resource not found')
+			}
+
+			throw new Error('Unhandled error')
 		}
 
 		const { course, instructorName } = result.value
