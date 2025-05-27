@@ -16,7 +16,7 @@ export class PrismaStudentRepository implements StudentsRepository {
 	}: FindUniqueStudentQuery): Promise<Student | null> {
 		const student = await this.prisma.student.findUnique({
 			where: { id: studentId },
-			include: { user: true },
+			include: { user: true, enrollments: true },
 		})
 
 		if (!student) return null
@@ -35,6 +35,7 @@ export class PrismaStudentRepository implements StudentsRepository {
 			},
 			include: {
 				user: true,
+				enrollments: true,
 			},
 		})
 
@@ -45,18 +46,19 @@ export class PrismaStudentRepository implements StudentsRepository {
 
 	async create(student: Student): Promise<void> {
 		await this.prisma.student.create({
-			data: PrismaStudentMapper.toPrisma(student),
+			data: PrismaStudentMapper.toPrismaCreate(student),
 		})
 	}
 
 	async save(student: Student): Promise<void> {
-		const data = PrismaStudentMapper.toPrisma(student)
-
-		await this.prisma.student.update({ where: { id: data.id }, data })
+		await this.prisma.student.update({
+			where: { id: student.id.toString() },
+			data: PrismaStudentMapper.toPrismaUpdate(student),
+		})
 	}
 
 	async remove(student: Student): Promise<void> {
-		const data = PrismaStudentMapper.toPrisma(student)
+		const data = PrismaStudentMapper.toPrismaCreate(student)
 
 		await this.prisma.student.delete({ where: { id: data.id } })
 	}

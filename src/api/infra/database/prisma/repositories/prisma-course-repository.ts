@@ -1,6 +1,7 @@
 import {
 	CoursesRepository,
 	FindManyCourseByCategoryIdQuery,
+	FindManyCourseByStatusIdQuery,
 	FindUniqueCourseQuery,
 } from '@/api/domain/e-learning/application/repositories/courses-repository'
 import { Course } from '@/api/domain/e-learning/enterprise/entities/course'
@@ -17,7 +18,7 @@ export class PrismaCourseRepository implements CoursesRepository {
 	}: FindUniqueCourseQuery): Promise<Course | null> {
 		const course = await this.prisma.course.findUnique({
 			where: { id: courseId },
-			include: { category: true },
+			include: { category: true, status: true, instructor: true },
 		})
 
 		if (!course) return null
@@ -25,12 +26,31 @@ export class PrismaCourseRepository implements CoursesRepository {
 		return PrismaCourseMapper.toDomain(course)
 	}
 
-	async findMany(): Promise<Course[]> {
-		const courses = await this.prisma.course.findMany({
-			where: { status: 'PUBLISHED' },
-			include: { category: true },
+	async findBySlug({ slug }: FindUniqueCourseQuery): Promise<Course | null> {
+		const course = await this.prisma.course.findFirst({
+			where: { slug },
+			include: { category: true, status: true },
 		})
-		return courses.map((course) => PrismaCourseMapper.toDomain(course))
+
+		if (!course) return null
+
+		return PrismaCourseMapper.toDomain(course)
+	}
+
+	async findManyRecent({
+		statusId,
+		params,
+	}: FindManyCourseByStatusIdQuery): Promise<Course[]> {
+		const page = params?.page ?? 1
+		const take = params?.limit ?? 20
+
+		const courses = await this.prisma.course.findMany({
+			where: { status: { id: statusId } },
+			take,
+			skip: (page - 1) * take,
+			include: { category: true, status: true },
+		})
+		return courses.map(PrismaCourseMapper.toDomain)
 	}
 
 	async findManyByCategoryId({
@@ -44,27 +64,30 @@ export class PrismaCourseRepository implements CoursesRepository {
 			where: { category: { id: categoryId } },
 			take,
 			skip: (page - 1) * take,
-			include: { category: true },
+			include: { category: true, status: true },
 		})
 
 		return courses.map(PrismaCourseMapper.toDomain)
 	}
 
-	async create(data: Course): Promise<void> {
-		await this.prisma.course.create({
-			data: PrismaCourseMapper.toPrisma(data),
-			include: { category: true },
+	async create(data: Course): Promise<Course> {
+		const course = await this.prisma.course.create({
+			data: PrismaCourseMapper.toPrismaCreate(data),
+			include: { category: true, status: true },
 		})
+
+		return PrismaCourseMapper.toDomain(course)
 	}
 
 	async save(course: Course): Promise<void> {
-		const data = PrismaCourseMapper.toPrisma(course)
-
-		await this.prisma.course.update({ where: { id: data.id }, data })
+		await this.prisma.course.update({
+			where: { id: course.id.toString() },
+			data: PrismaCourseMapper.toPrismaUpdate(course),
+		})
 	}
 
 	async remove(course: Course): Promise<void> {
-		const data = PrismaCourseMapper.toPrisma(course)
+		const data = PrismaCourseMapper.toPrismaCreate(course)
 
 		await this.prisma.course.delete({ where: { id: data.id } })
 	}
