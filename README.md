@@ -1,28 +1,28 @@
 # 🧩 Plataforma de E-learning
 
-Este projeto consiste na implementação de uma plataforma de e-learning, projetada com foco em modularidade, escalabilidade, testabilidade e manutenibilidade[cite: 3]. O desenvolvimento utiliza NestJS com TypeScript, seguindo os princípios do Domain-Driven Design (DDD)[cite: 9, 11].
+Este projeto consiste na implementação de uma plataforma de e-learning, projetada com foco em modularidade, escalabilidade, testabilidade e manutenibilidade. O desenvolvimento utiliza NestJS com TypeScript, seguindo os princípios do Domain-Driven Design (DDD).
 
 ---
 ## 🚀 Tecnologias Utilizadas
 
 ### 🔙 Back-end
 
-* ⚙️ **Linguagem Principal**: TypeScript (com Node.js) [cite: 21, 22]
-* 🌱 **Framework**: NestJS [cite: 9, 22]
-* 🐘 **Banco de Dados**: MySQL [cite: 22]
-* 🗃️ **ORM**: Prisma [cite: 22]
-* 🔐 **Autenticação**: JWT (JSON Web Tokens) [cite: 38]
-* 📚 **Documentação da API**: Swagger (previsto) [cite: 38]
-* 🧪 **Testes**: Vitest, Faker [cite: 22]
-* 🐳 **Outros**: Docker [cite: 22]
+* ⚙️ **Linguagem Principal**: TypeScript (com Node.js)
+* 🌱 **Framework**: NestJS
+* 🐘 **Banco de Dados**: MySQL 
+* 🗃️ **ORM**: Prisma
+* 🔐 **Autenticação**: JWT (JSON Web Tokens)
+* 📚 **Documentação da API**: Swagger (previsto)
+* 🧪 **Testes**: Vitest, Faker
+* 🐳 **Outros**: Docker
 
 ### 🧾 Versionamento
 
-* 🗂️ **Git & GitHub**: Implícito pelo uso de CI/CD com GitHub Actions [cite: 61]
+* 🗂️ **Git & GitHub**: Implícito pelo uso de CI/CD com GitHub Actions
 
 ### 🗂️ Organização e Documentação
 
-* 📖 **Documentação Técnica**: O documento fornecido é um exemplo da documentação técnica do projeto[cite: 19].
+* 📖 **Documentação Técnica**: O documento fornecido é um exemplo da documentação técnica do projeto.
 
 ---
 ## 🗂️ Estrutura de Pastas
@@ -31,31 +31,31 @@ A estrutura do projeto segue uma arquitetura em camadas e domínios, separando r
 
 ### 📁 Módulos Principais
 
-* 📦 prisma/migrations/: Migrações do banco de dados gerenciadas pelo Prisma[cite: 23].
+* 📦 prisma/migrations/: Migrações do banco de dados gerenciadas pelo Prisma.
 * 📦 src/api/core/: Núcleo de domínio genérico.
-    * either/: Implementação do tipo Either (Right/Left) para retorno funcional[cite: 23].
-    * entities/: Entidades genéricas de domínio[cite: 23].
-    * value-objects/: Objetos de valor reutilizáveis (ex: Email, CPF)[cite: 24].
-    * enums/: Enumerações compartilhadas[cite: 24].
-    * errors/errors/: Tipos e classes de erro padrão do domínio[cite: 24].
-    * events/: Definições e contratos de eventos do domínio[cite: 24].
-    * repositories/: Interfaces genéricas de repositórios[cite: 25].
-    * types/: Tipos auxiliares e contratos[cite: 25].
+    * either/: Implementação do tipo Either (Right/Left) para retorno funcional.
+    * entities/: Entidades genéricas de domínio.
+    * value-objects/: Objetos de valor reutilizáveis (ex: Email, CPF).
+    * enums/: Enumerações compartilhadas.
+    * errors/errors/: Tipos e classes de erro padrão do domínio.
+    * events/: Definições e contratos de eventos do domínio.
+    * repositories/: Interfaces genéricas de repositórios.
+    * types/: Tipos auxiliares e contratos.
 * 📦 src/api/domain/e-learning/: Domínio específico de e-learning.
-    * application/: Camada de aplicação do domínio e-learning[cite: 25].
-        * repositories/: Contratos de repositórios específicos (ex: ICourseRepository)[cite: 25].
-        * subscriber/: Subsistemas que reagem a eventos de domínio[cite: 25].
-        * use-cases/: Casos de uso organizados por contexto (course, enrollment, instructor, payment, student)[cite: 26, 27].
-    * enterprise/: Camada de domínio empresarial (entidades de negócio)[cite: 27].
-        * entities/: Entidades centrais (Course, Enrollment, etc.)[cite: 27].
-        * value-objects/: Objetos de valor específicos por contexto (course, enrollment, lesson, payment, price, quiz, slug, user)[cite: 28, 29, 30].
-        * events/: Eventos de domínio específicos do e-learning[cite: 30].
+    * application/: Camada de aplicação do domínio e-learning.
+        * repositories/: Contratos de repositórios específicos (ex: ICourseRepository).
+        * subscriber/: Subsistemas que reagem a eventos de domínio.
+        * use-cases/: Casos de uso organizados por contexto (course, enrollment, instructor, payment, student).
+    * enterprise/: Camada de domínio empresarial (entidades de negócio).
+        * entities/: Entidades centrais (Course, Enrollment, etc.).
+        * value-objects/: Objetos de valor específicos por contexto (course, enrollment, lesson, payment, price, quiz, slug, user).
+        * events/: Eventos de domínio específicos do e-learning.
 * 📦 src/api/infra/: Camada de infraestrutura.
     * database/prisma/: Implementação relacionada ao Prisma ORM.
-        * mappers/: Conversores entre entidades do domínio e modelo Prisma[cite: 30].
-        * repositories/: Implementações dos repositórios usando Prisma[cite: 30].
-    * nodeMailer/: Serviço de envio de emails via NodeMailer[cite: 30].
-* 🧪 test/: (Estrutura de testes não detalhada no mesmo nível, mas Vitest é a ferramenta [cite: 22]).
+        * mappers/: Conversores entre entidades do domínio e modelo Prisma.
+        * repositories/: Implementações dos repositórios usando Prisma.
+    * nodeMailer/: Serviço de envio de emails via NodeMailer.
+* 🧪 test/: (Estrutura de testes não detalhada no mesmo nível, mas Vitest é a ferramenta).
 
 ---
 ## 🚀 Diagrama de Classes
@@ -275,15 +275,15 @@ erDiagram
   }
 ```
 ---
-## ✅ Roteiro de Testes: Cadastro de Estudante (Funcionalidade F01 [cite: 32])
+## ✅ Roteiro de Testes: Cadastro de Estudante (Funcionalidade F01)
 
-Este roteiro descreve os testes unitários e de validação aplicados à funcionalidade de **criação de conta para estudante** no sistema[cite: 32].
+Este roteiro descreve os testes unitários e de validação aplicados à funcionalidade de **criação de conta para estudante** no sistema.
 
 ### 🧪 Objetivo
 
 Garantir que o cadastro de novos estudantes funcione conforme o esperado, validando os dados de entrada e a criação correta do usuário no sistema.
 
-### 📋 Campos do Cadastro de Estudante (baseado em registerStudent [cite: 46])
+### 📋 Campos do Cadastro de Estudante (baseado em registerStudent)
 
 | Campo         | Obrigatório | Tipo/Validação                      |
 |---------------|-------------|-------------------------------------|
@@ -293,7 +293,7 @@ Garantir que o cadastro de novos estudantes funcione conforme o esperado, valida
 | cpf           | ✅ Sim      | string, formato de CPF válido       |
 | phoneNumber   | ✅ Sim      | string                              |
 
-### ✅ Casos de Teste de Validação (Entidade/DTO) (baseado em registerStudent [cite: 47])
+### ✅ Casos de Teste de Validação (Entidade/DTO) (baseado em registerStudent)
 
 | ID   | Descrição do Teste        | Resultado Esperado                    |
 |------|---------------------------|---------------------------------------|
@@ -307,7 +307,7 @@ Garantir que o cadastro de novos estudantes funcione conforme o esperado, valida
 | CT08 | CPF vazio                 | Erro: Campo obrigatório (ou similar) |
 | CT09 | Telefone vazio            | Erro: Campo obrigatório (ou similar) |
 
-### 🧪 Casos de Teste Unitário - Controller (Endpoint: POST /accounts/students [cite: 40])
+### 🧪 Casos de Teste Unitário - Controller (Endpoint: POST /accounts/students)
 
 | ID   | Descrição                                       | Resultado Esperado                       |
 |------|-------------------------------------------------|------------------------------------------|
@@ -316,7 +316,7 @@ Garantir que o cadastro de novos estudantes funcione conforme o esperado, valida
 | TC03 | Registrar estudante com CPF inválido            | HTTP 4xx (Client Error) com mensagem de erro |
 | TC04 | Registrar estudante com campo obrigatório ausente | HTTP 4xx (Client Error) com mensagem de erro |
 
-### 🧪 Casos de Teste Unitário - Service (Lógica) (baseado em registerStudent use-case [cite: 46])
+### 🧪 Casos de Teste Unitário - Service (Lógica) (baseado em registerStudent use-case)
 
 | ID   | Descrição                                     | Resultado Esperado                            |
 |------|-----------------------------------------------|-----------------------------------------------|
@@ -324,37 +324,37 @@ Garantir que o cadastro de novos estudantes funcione conforme o esperado, valida
 | TS02 | Tentar salvar com e-mail duplicado            | Exceção/Erro indicando e-mail duplicado     |
 | TS03 | Tentar salvar com CPF inválido (se validado no serviço) | Exceção/Erro indicando CPF inválido          |
 
-### 🧪 Casos de Teste Unitário - Service/Query (Consulta) (Exemplo: getStudent [cite: 49])
+### 🧪 Casos de Teste Unitário - Service/Query (Consulta) (Exemplo: getStudent)
 
 | ID   | Descrição                         | Resultado Esperado                               |
 |------|-----------------------------------|--------------------------------------------------|
-| TQ01 | Buscar estudante por ID existente | Estudante retornado com sucesso com dados básicos [cite: 49] |
-| TQ02 | Buscar estudante por ID inexistente | Erro: "Aluno não encontrado" ou nulo/vazio [cite: 49]      |
+| TQ01 | Buscar estudante por ID existente | Estudante retornado com sucesso com dados básicos |
+| TQ02 | Buscar estudante por ID inexistente | Erro: "Aluno não encontrado" ou nulo/vazio      |
 
 ---
 ## 🧰 Tecnologias de Teste
 
-* **Framework de Teste**: Vitest [cite: 22, 61]
-* **Mocking**: Mocks são usados para serviços externos como E-mail, Pagamento, JWT e Banco de Dados em cenários de teste[cite: 64].
-* **Testes de API/Integração**: Supertest (usado com Vitest) [cite: 61]
-* **Manipulação de Dados de Teste**: Faker [cite: 22]
-* **Banco de Dados para Testes**: Prisma com Docker + seed [cite: 64]
+* **Framework de Teste**: Vitest
+* **Mocking**: Mocks são usados para serviços externos como E-mail, Pagamento, JWT e Banco de Dados em cenários de teste.
+* **Testes de API/Integração**: Supertest (usado com Vitest) 
+* **Manipulação de Dados de Teste**: Faker 
+* **Banco de Dados para Testes**: Prisma com Docker + seed
 
 ---
 ## ▶️ Como Executar os Testes
 
-* Testes são executados automaticamente a cada push e pull request via CI/CD (GitHub Actions)[cite: 61].
+* Testes são executados automaticamente a cada push e pull request via CI/CD (GitHub Actions).
 * (Comandos específicos para execução local como npm test ou similar não detalhados, mas seriam padrão para um projeto Vitest).
 
 ---
 ## ⚙️ Dependências e Build (Principais)
 
-* **Linguagem**: TypeScript [cite: 22]
-* **Framework**: NestJS [cite: 22]
-* **ORM**: Prisma [cite: 22]
-* **Banco de Dados**: MySQL [cite: 22]
-* **Conteinerização**: Docker [cite: 22]
-* **Testes**: Vitest [cite: 22]
+* **Linguagem**: TypeScript
+* **Framework**: NestJS
+* **ORM**: Prisma
+* **Banco de Dados**: MySQL
+* **Conteinerização**: Docker
+* **Testes**: Vitest
 
 ---
 
